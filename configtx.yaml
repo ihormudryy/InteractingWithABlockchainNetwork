@@ -6,17 +6,17 @@ Profiles:
       Organizations:
       - *OrdererOrg
     Consortiums:
-      ${COIN_NAME_CAMELCASE}Consortium:
+      $CryptocurrencyConsortium:
         Organizations:
         - *ShopOrg
-        - *${COIN_NAME_CAMELCASE}Org
+        - *CryptocurrencyOrg
   TwoOrgsChannel:
-    Consortium: ${COIN_NAME_CAMELCASE}Consortium
+    Consortium: CryptocurrencyConsortium
     Application:
       <<: *ApplicationDefaults
       Organizations:
       - *ShopOrg
-      - *${COIN_NAME_CAMELCASE}Org
+      - *CryptocurrencyOrg
 
 Organizations:
 - &OrdererOrg
@@ -30,12 +30,12 @@ Organizations:
   AnchorPeers:
   - Host: shop-peer
     Port: 7051
-- &${COIN_NAME_CAMELCASE}Org
-  Name: ${COIN_NAME_CAMELCASE}OrgMSP
-  ID: ${COIN_NAME_CAMELCASE}OrgMSP
-  MSPDir: cli/peers/peerOrganizations/${COIN_NAME}-org/msp
+- &CryptocurrencyOrg
+  Name: CryptocurrencyOrgMSP
+  ID: CryptocurrencyOrgMSP
+  MSPDir: cli/peers/peerOrganizations/cryptocurrency-org/msp
   AnchorPeers:
-  - Host: ${COIN_NAME}-peer
+  - Host: cryptocurrency-peer
     Port: 7051
 
 Orderer: &OrdererDefaults
