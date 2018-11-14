@@ -51,7 +51,7 @@ var input = {
 
 The invoke calls from user's iOS app which update the blockchain state.
 
-#### Generate fitcoins
+#### Generate ${COIN_NAME}s
 ```
 input = {
   type: invoke,
@@ -65,7 +65,7 @@ input = {
 - userID - the user ID returned from enroll
 - totalSteps - the total steps walked by user
 
-#### Award fitcoins
+#### Award ${COIN_NAME}s
 ```
 input = {
   type: invoke,
@@ -77,7 +77,7 @@ input = {
 }
 ```
 - userID - the user ID
-- newFitcoins - the number of fitcoins to add to user's account
+- newFitcoins - the number of ${COIN_NAME}s to add to user's account
 
 #### Make purchase
 ```

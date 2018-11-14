@@ -27,8 +27,8 @@ import (
 	pb "github.com/hyperledger/fabric/protos/peer"
 )
 
-//steps to fitcoin constant
-const STEPS_TO_FITCOIN = 100
+//steps to ${COIN_NAME} constant
+const STEPS_TO_COIN_NAME = 100
 
 //contract state
 const STATE_COMPLETE = "complete"
@@ -47,7 +47,7 @@ type SimpleChaincode struct {
 type Member struct {
 	Id              string `json:"id"`
 	Type            string `json:"memberType"`
-	FitcoinsBalance int    `json:"fitcoinsBalance"`
+	FitcoinsBalance int    `json:"${COIN_NAME}sBalance"`
 }
 
 // User

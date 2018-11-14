@@ -16,8 +16,8 @@ services:
         max-size: "1m"
         max-file: "10"
 
-  herecoin-statedb:
-    container_name: herecoin-statedb
+  coin-statedb:
+    container_name: coin-statedb
     image: hyperledger/fabric-couchdb:0.4.14
 #    image: ishangulhane/fabric-couchdb
     environment:
@@ -139,9 +139,9 @@ services:
         max-size: "1m"
         max-file: "10"
 
-  herecoin-ca:
-    container_name: herecoin-ca
-    image: herecoin-ca
+  coin-ca:
+    container_name: coin-ca
+    image: coin-ca
     environment:
       - FABRIC_CA_HOME=/ca
     command: fabric-ca-server start
@@ -190,7 +190,7 @@ services:
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=herecoin_default
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=cryptocurrency_default
       - CORE_LOGGING_LEVEL=DEBUG
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_ENDORSER_ENABLED=true
@@ -219,20 +219,20 @@ services:
         max-size: "1m"
         max-file: "10"
 
-  herecoin-peer:
-    container_name: herecoin-peer
-    image: herecoin-peer
+  cryptocurrency-peer:
+    container_name: cryptocurrency-peer
+    image: cryptocurrency-peer
     environment:
-      - CORE_PEER_ID=herecoin-peer
-      - CORE_PEER_ADDRESS=herecoin-peer:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=herecoin-peer:7051
-      - CORE_PEER_LOCALMSPID=HERECoinOrgMSP
+      - CORE_PEER_ID=cryptocurrency-peer
+      - CORE_PEER_ADDRESS=cryptocurrency-peer:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=cryptocurrency-peer:7051
+      - CORE_PEER_LOCALMSPID=${COIN_NAME_CAMELCASE}OrgMSP
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=herecoin-statedb:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=cryptocurrency-statedb:5984
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=herecoin_default
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=cryptocurrency_default
       - CORE_LOGGING_LEVEL=DEBUG
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_ENDORSER_ENABLED=true
@@ -252,10 +252,10 @@ services:
       - 8053:7053
     depends_on:
       - orderer0
-      - herecoin-ca
+      - cryptocurrency-ca
       - shop-peer
       - ca-datastore
-      - herecoin-statedb
+      - cryptocurrency-statedb
     logging:
       driver: "json-file"
       options:
@@ -275,11 +275,11 @@ services:
     - orderer0
     - shop-ca
     - shop-peer
-    - herecoin-ca
-    - herecoin-peer
+    - cryptocurrency-ca
+    - cryptocurrency-peer
     - ca-datastore
     - shop-statedb
-    - herecoin-statedb
+    - cryptocurrency-statedb
     secrets:
       - config
       - channel
@@ -315,11 +315,11 @@ services:
         max-size: "1m"
         max-file: "10"
 
-  herecoin-backend :
-    #container_name: herecoin-backend
+  cryptocurrency-backend :
+    #container_name: cryptocurrency-backend
     image: backend
     environment:
-    - ORGID=org.HERECoinOrg
+    - ORGID=org.${COIN_NAME_CAMELCASE}Org
     - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
     - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:amd64-1.3.0
     - SECRETSDIR=/run/secrets

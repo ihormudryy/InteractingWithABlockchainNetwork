@@ -43,26 +43,26 @@ const config = {
     }
   }, {
     peer: {
-      hostname: 'fitcoin-peer',
-      url: 'grpcs://fitcoin-peer:7051',
-      pem: readCryptoFile('fitcoinOrg.pem'),
+      hostname: '${COIN_NAME}-peer',
+      url: 'grpcs://${COIN_NAME}-peer:7051',
+      pem: readCryptoFile('${COIN_NAME}Org.pem'),
       userKeystoreDBName: 'user_db',
       userKeystoreDBUrl: 'http://ca-datastore:5984',
       stateDBName: 'member_db',
-      stateDBUrl: 'http://fitcoin-statedb:5984',
-      eventHubUrl: 'grpcs://fitcoin-peer:7053',
-      org: 'org.FitCoinOrg',
+      stateDBUrl: 'http://${COIN_NAME}-statedb:5984',
+      eventHubUrl: 'grpcs://${COIN_NAME}-peer:7053',
+      org: 'org.${COIN_NAME_CAMELCASE}Org',
       userType: 'user'
     },
     ca: {
-      hostname: 'fitcoin-ca',
-      url: 'https://fitcoin-ca:7054',
-      mspId: 'FitCoinOrgMSP',
-      caName: 'fitcoin-org'
+      hostname: '${COIN_NAME}-ca',
+      url: 'https://${COIN_NAME}-ca:7054',
+      mspId: '${COIN_NAME_CAMELCASE}OrgMSP',
+      caName: '${COIN_NAME}-org'
     },
     admin: {
-      key: readCryptoFile('Admin@fitcoin-org-key.pem'),
-      cert: readCryptoFile('Admin@fitcoin-org-cert.pem')
+      key: readCryptoFile('Admin@${COIN_NAME}-org-key.pem'),
+      cert: readCryptoFile('Admin@${COIN_NAME}-org-cert.pem')
     }
   }]
 };

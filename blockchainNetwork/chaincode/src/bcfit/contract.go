@@ -176,7 +176,7 @@ func (t *SimpleChaincode) transactPurchase(stub shim.ChaincodeStubInterface, arg
 			if (contractUser.FitcoinsBalance - contract.Cost) >= 0 {
 				contractUser.FitcoinsBalance = contractUser.FitcoinsBalance - contract.Cost
 			} else {
-				return shim.Error("Insufficient fitcoins")
+				return shim.Error("Insufficient ${COIN_NAME}s")
 			}
 
 			//update seller's product count

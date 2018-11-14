@@ -10,5 +10,5 @@ npm-debug.log
 .npmrc
 bin
 dist
-fitcoin-peer
+${COIN_NAME}-peer
 shop-peer

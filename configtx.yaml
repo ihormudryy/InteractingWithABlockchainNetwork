@@ -6,17 +6,17 @@ Profiles:
       Organizations:
       - *OrdererOrg
     Consortiums:
-      FitCoinConsortium:
+      ${COIN_NAME_CAMELCASE}Consortium:
         Organizations:
         - *ShopOrg
-        - *FitCoinOrg
+        - *${COIN_NAME_CAMELCASE}Org
   TwoOrgsChannel:
-    Consortium: FitCoinConsortium
+    Consortium: ${COIN_NAME_CAMELCASE}Consortium
     Application:
       <<: *ApplicationDefaults
       Organizations:
       - *ShopOrg
-      - *FitCoinOrg
+      - *${COIN_NAME_CAMELCASE}Org
 
 Organizations:
 - &OrdererOrg
@@ -30,12 +30,12 @@ Organizations:
   AnchorPeers:
   - Host: shop-peer
     Port: 7051
-- &FitCoinOrg
-  Name: FitCoinOrgMSP
-  ID: FitCoinOrgMSP
-  MSPDir: cli/peers/peerOrganizations/fitcoin-org/msp
+- &${COIN_NAME_CAMELCASE}Org
+  Name: ${COIN_NAME_CAMELCASE}OrgMSP
+  ID: ${COIN_NAME_CAMELCASE}OrgMSP
+  MSPDir: cli/peers/peerOrganizations/${COIN_NAME}-org/msp
   AnchorPeers:
-  - Host: fitcoin-peer
+  - Host: ${COIN_NAME}-peer
     Port: 7051
 
 Orderer: &OrdererDefaults

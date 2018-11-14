@@ -3,7 +3,7 @@ set -eu
 
 dockerFabricPull() {
   local FABRIC_TAG=$1
-  for IMAGES in peer orderer ccenv couchdb; do
+  for IMAGES in peer orderer ccenv; do
       echo "==> FABRIC IMAGE: $IMAGES"
       echo
       docker pull hyperledger/fabric-$IMAGES:$FABRIC_TAG
@@ -36,17 +36,19 @@ else
             fi
     done
 fi
-# 1.0.6
+
+# 1.3.0
 if [ $DOWNLOAD ]; then
-    : ${CA_TAG:="x86_64-1.0.6"}
-    : ${FABRIC_TAG:="x86_64-1.0.6"}
+    : ${CA_TAG:="amd64-1.3.0"}
+    : ${FABRIC_TAG:="amd64-1.3.0"}
 
     echo "===> Pulling fabric Images"
     dockerFabricPull ${FABRIC_TAG}
 
     echo "===> Pulling fabric ca Image"
     dockerCaPull ${CA_TAG}
-    docker pull ishangulhane/fabric-couchdb
+
+    docker pull hyperledger/fabric-couchdb:0.4.14
     echo
     echo "===> List out hyperledger docker images"
     docker images | grep hyperledger*
@@ -59,9 +61,9 @@ if [ $BUILD ];
     echo '############################################################'
     docker build -t orderer-peer:latest orderer/
     docker build -t shop-peer:latest shopPeer/
-    docker build -t fitcoin-peer:latest fitcoinPeer/
+    docker build -t cryptocurrency-peer:latest cryptocurrencyPeer/
     docker build -t shop-ca:latest shopCertificateAuthority/
-    docker build -t fitcoin-ca:latest fitcoinCertificateAuthority/
+    docker build -t cryptocurrency-ca:latest cryptocurrencyCertificateAuthority/
     docker build -t blockchain-setup:latest blockchainNetwork/
     docker build -t rabbit-client:latest rabbitClient/
     docker build -t redis-server:latest redisCluster/

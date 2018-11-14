@@ -1,7 +1,7 @@
 #!/bin/bash
 
 docker rm -f $(docker ps -aq)
-images=(blockchain-setup fitcoin-ca shop-ca orderer-peer fitcoin-peer shop-peer backend redis-server rabbit-client)
+images=(blockchain-setup ${COIN_NAME}-ca shop-ca orderer-peer ${COIN_NAME}-peer shop-peer backend redis-server rabbit-client)
 for i in "${images[@]}"
 do
 	echo Removing image : $i
@@ -9,7 +9,7 @@ do
 done
 
 #docker rmi -f $(docker images | grep none)
-images=( dev-shop-peer dev-fitcoin-peer)
+images=( dev-shop-peer dev-${COIN_NAME}-peer)
 for i in "${images[@]}"
 do
 	echo Removing image : $i

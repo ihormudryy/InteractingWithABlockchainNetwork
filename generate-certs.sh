@@ -15,18 +15,18 @@ $PROJPATH/cryptogen generate --config=$PROJPATH/crypto-config.yaml --output=$CLI
 
 sh generate-cfgtx.sh
 
-rm -rf $PROJPATH/{orderer,shopPeer,fitcoinPeer}/crypto
-mkdir $PROJPATH/{orderer,shopPeer,fitcoinPeer}/crypto
+rm -rf $PROJPATH/{orderer,shopPeer,${COIN_NAME}Peer}/crypto
+mkdir $PROJPATH/{orderer,shopPeer,${COIN_NAME}Peer}/crypto
 cp -r $ORDERERS/orderer-org/orderers/orderer0/{msp,tls} $PROJPATH/orderer/crypto
 cp -r $PEERS/shop-org/peers/shop-peer/{msp,tls} $PROJPATH/shopPeer/crypto
-cp -r $PEERS/fitcoin-org/peers/fitcoin-peer/{msp,tls} $PROJPATH/fitcoinPeer/crypto
+cp -r $PEERS/${COIN_NAME}-org/peers/${COIN_NAME}-peer/{msp,tls} $PROJPATH/${COIN_NAME}Peer/crypto
 cp $CLIPATH/genesis.block $PROJPATH/orderer/crypto/
 
 SHOPCAPATH=$PROJPATH/shopCertificateAuthority
-FITCOINCAPATH=$PROJPATH/fitcoinCertificateAuthority
+COIN_NAMECAPATH=$PROJPATH/${COIN_NAME}CertificateAuthority
 
-rm -rf {$SHOPCAPATH,$FITCOINCAPATH}/{ca,tls}
-mkdir -p {$SHOPCAPATH,$FITCOINCAPATH}/{ca,tls}
+rm -rf {$SHOPCAPATH,${COIN_NAME}CAPATH}/{ca,tls}
+mkdir -p {$SHOPCAPATH,${COIN_NAME}CAPATH}/{ca,tls}
 
 cp $PEERS/shop-org/ca/* $SHOPCAPATH/ca
 cp $PEERS/shop-org/tlsca/* $SHOPCAPATH/tls
@@ -35,23 +35,23 @@ mv $SHOPCAPATH/ca/*-cert.pem $SHOPCAPATH/ca/cert.pem
 mv $SHOPCAPATH/tls/*_sk $SHOPCAPATH/tls/key.pem
 mv $SHOPCAPATH/tls/*-cert.pem $SHOPCAPATH/tls/cert.pem
 
-cp $PEERS/fitcoin-org/ca/* $FITCOINCAPATH/ca
-cp $PEERS/fitcoin-org/tlsca/* $FITCOINCAPATH/tls
-mv $FITCOINCAPATH/ca/*_sk $FITCOINCAPATH/ca/key.pem
-mv $FITCOINCAPATH/ca/*-cert.pem $FITCOINCAPATH/ca/cert.pem
-mv $FITCOINCAPATH/tls/*_sk $FITCOINCAPATH/tls/key.pem
-mv $FITCOINCAPATH/tls/*-cert.pem $FITCOINCAPATH/tls/cert.pem
+cp $PEERS/${COIN_NAME}-org/ca/* ${COIN_NAME}CAPATH/ca
+cp $PEERS/${COIN_NAME}-org/tlsca/* ${COIN_NAME}CAPATH/tls
+mv ${COIN_NAME}CAPATH/ca/*_sk ${COIN_NAME}CAPATH/ca/key.pem
+mv ${COIN_NAME}CAPATH/ca/*-cert.pem ${COIN_NAME}CAPATH/ca/cert.pem
+mv ${COIN_NAME}CAPATH/tls/*_sk ${COIN_NAME}CAPATH/tls/key.pem
+mv ${COIN_NAME}CAPATH/tls/*-cert.pem ${COIN_NAME}CAPATH/tls/cert.pem
 
 WEBCERTS=$PROJPATH/configuration/certs
 rm -rf $WEBCERTS
 mkdir -p $WEBCERTS
 cp $PROJPATH/orderer/crypto/tls/ca.crt $WEBCERTS/ordererOrg.pem
 cp $PROJPATH/shopPeer/crypto/tls/ca.crt $WEBCERTS/shopOrg.pem
-cp $PROJPATH/fitcoinPeer/crypto/tls/ca.crt $WEBCERTS/fitcoinOrg.pem
+cp $PROJPATH/${COIN_NAME}Peer/crypto/tls/ca.crt $WEBCERTS/${COIN_NAME}Org.pem
 cp $PEERS/shop-org/users/Admin@shop-org/msp/keystore/* $WEBCERTS/Admin@shop-org-key.pem
 cp $PEERS/shop-org/users/Admin@shop-org/msp/signcerts/* $WEBCERTS/
-cp $PEERS/fitcoin-org/users/Admin@fitcoin-org/msp/keystore/* $WEBCERTS/Admin@fitcoin-org-key.pem
-cp $PEERS/fitcoin-org/users/Admin@fitcoin-org/msp/signcerts/* $WEBCERTS/
+cp $PEERS/${COIN_NAME}-org/users/Admin@${COIN_NAME}-org/msp/keystore/* $WEBCERTS/Admin@${COIN_NAME}-org-key.pem
+cp $PEERS/${COIN_NAME}-org/users/Admin@${COIN_NAME}-org/msp/signcerts/* $WEBCERTS/
 
 WEBCERTS=$PROJPATH/blockchainNetwork
 

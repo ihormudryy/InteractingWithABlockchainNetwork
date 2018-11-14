@@ -154,5 +154,5 @@ function getAdminOrgs() {
 // Export organization clients
 /*export {
   shopClient,
-  fitcoinClient
+  ${COIN_NAME}Client
 };*/

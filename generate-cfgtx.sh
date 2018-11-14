@@ -27,4 +27,4 @@ echo
 echo "##################################################################"
 echo "####### Generating anchor peer update for RepairShopOrg ##########"
 echo "##################################################################"
-$PROJPATH/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate $CLIPATH/FitCoinOrgMSPAnchors.tx -channelID $CHANNEL_NAME -asOrg FitCoinOrgMSP
+$PROJPATH/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate $CLIPATH/${COIN_NAME_CAMELCASE}OrgMSPAnchors.tx -channelID $CHANNEL_NAME -asOrg ${COIN_NAME_CAMELCASE}OrgMSP

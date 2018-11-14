@@ -101,7 +101,7 @@ func (t *SimpleChaincode) createMember(stub shim.ChaincodeStubInterface, args []
 }
 
 // ============================================================================================================================
-// Generate fitcoins for the user using user steps
+// Generate ${COIN_NAME}s for the user using user steps
 // Inputs - userId, transactionSteps
 // ============================================================================================================================
 func (t *SimpleChaincode) generateFitcoins(stub shim.ChaincodeStubInterface, args []string) pb.Response {
@@ -131,9 +131,9 @@ func (t *SimpleChaincode) generateFitcoins(stub shim.ChaincodeStubInterface, arg
 	//update user account
 	var newSteps = newTransactionSteps - user.StepsUsedForConversion
 	var newFitcoins = 0
-	if newSteps >= STEPS_TO_FITCOIN {
-		newFitcoins = newSteps / STEPS_TO_FITCOIN
-		var remainderSteps = newSteps % STEPS_TO_FITCOIN
+	if newSteps >= STEPS_TO_COIN_NAME {
+		newFitcoins = newSteps / STEPS_TO_COIN_NAME
+		var remainderSteps = newSteps % STEPS_TO_COIN_NAME
 		user.FitcoinsBalance = user.FitcoinsBalance + newFitcoins
 		user.StepsUsedForConversion = newTransactionSteps - remainderSteps
 		user.TotalSteps = newTransactionSteps
@@ -168,7 +168,7 @@ func (t *SimpleChaincode) generateFitcoins(stub shim.ChaincodeStubInterface, arg
 
 
 // ============================================================================================================================
-// Award fitcoins to user
+// Award ${COIN_NAME}s to user
 // Inputs - userId, newFitcoins
 // ============================================================================================================================
 func (t *SimpleChaincode) awardFitcoins(stub shim.ChaincodeStubInterface, args []string) pb.Response {
@@ -177,7 +177,7 @@ func (t *SimpleChaincode) awardFitcoins(stub shim.ChaincodeStubInterface, args [
 	}
 	var err error
 
-	//get user_id and fitcoins from args
+	//get user_id and ${COIN_NAME}s from args
 	user_id := args[0]
 	newFitcoins, err := strconv.Atoi(args[1])
 	if err != nil {

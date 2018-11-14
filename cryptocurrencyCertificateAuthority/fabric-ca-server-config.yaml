@@ -23,7 +23,7 @@ tls:
 #  certificates (TCerts).
 #############################################################################
 ca:
-  name: fitcoin-org
+  name: ${COIN_NAME}-org
   keyfile: ./ca/key.pem
   certfile: ./ca/cert.pem
   chainfile: ./ca/cert.pem
@@ -48,7 +48,7 @@ registry:
      - name: admin
        pass: adminpw
        type: client
-       affiliation: "FitCoinOrg"
+       affiliation: "${COIN_NAME_CAMELCASE}Org"
        maxenrollments: -1
        attrs:
           hf.Registrar.Roles: "client,user,peer,validator,auditor"
@@ -95,7 +95,7 @@ ldap:
 #############################################################################
 affiliations:
    org:
-      - FitCoinOrg
+      - ${COIN_NAME_CAMELCASE}Org
 
 
 #############################################################################

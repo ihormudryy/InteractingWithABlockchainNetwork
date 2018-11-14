@@ -15,10 +15,10 @@ PeerOrgs:
     Count: 2
   Users:
     Count: 1
-- Name: FitCoinOrg
-  Domain: fitcoin-org
+- Name: ${COIN_NAME_CAMELCASE}Org
+  Domain: ${COIN_NAME}-org
   Specs:
-  - Hostname: fitcoin-peer
+  - Hostname: ${COIN_NAME}-peer
     CommonName: "{{.Hostname}}"
   Template:
     Count: 2
