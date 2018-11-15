@@ -9,8 +9,8 @@ debug: false
 #############################################################################
 tls:
   enabled: true
-  certfile: /ca/tls/cert.pem
-  keyfile: /ca/tls/key.pem
+  certfile: /etc/hyperledger/fabric-ca-server/ca/tls/cert.pem
+  keyfile: /etc/hyperledger/fabric-ca-server/ca/tls/key.pem
   clientauth:
     type: noclientcert
     certfiles:
@@ -24,9 +24,9 @@ tls:
 #############################################################################
 ca:
   name: shop-org
-  keyfile: ./ca/key.pem
-  certfile: ./ca/cert.pem
-  chainfile: ./ca/cert.pem
+  keyfile: /etc/hyperledger/fabric-ca-server/ca/ca/key.pem
+  certfile: /etc/hyperledger/fabric-ca-server/ca/ca/cert.pem
+  chainfile: /etc/hyperledger/fabric-ca-server/ca/ca/cert.pem
 
 #############################################################################
 #  The registry section controls how the fabric-ca-server does two things:
@@ -122,11 +122,11 @@ signing:
 csr:
   cn: fabric-ca-server
   names:
-  - C: US
-    ST: "California"
+  - C: EU
+    ST: "Berlin"
     L:
-    O: "IBM"
-    OU: "Cloud"
+    O: "HERE"
+    OU: "Technologies"
   hosts:
   - shop-ca
   - localhost
