@@ -51,7 +51,7 @@ const config = {
       stateDBName: 'member_db',
       stateDBUrl: 'http://cryptocurrency-statedb:5984',
       eventHubUrl: 'grpcs://cryptocurrency-peer:7053',
-      org: 'org.cryptocurrencyOrg',
+      org: 'org.CryptocurrencyOrg',
       userType: 'user'
     },
     ca: {

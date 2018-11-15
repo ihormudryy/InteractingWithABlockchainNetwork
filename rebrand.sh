@@ -1,14 +1,5 @@
 #!/bin/bash
 
-
-if [[ $(uname) = 'Darwin' ]]; then
-    PLATFORM="mac"
-else
-    PLATFORM="ubuntu"
-fi
-
-echo $(uname) $PLATFORM
-
 exit 1
 find . -type f -print0 | xargs -0 -n 1 sed -i -e 's/${COIN_NAME_CAMELCASE}/${COIN_NAME_CAMELCASE}/g'
 find . -type f -print0 | xargs -0 -n 1 sed -i -e 's/${COIN_NAME}/${COIN_NAME}/g'
