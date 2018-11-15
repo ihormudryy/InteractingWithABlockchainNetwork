@@ -3,3 +3,4 @@ set-up
 chaincode
 node_modules
 config.json
+channel.tx

@@ -75,7 +75,7 @@ mv ${COIN_NAME_CA_PATH}/tls/*_sk ${COIN_NAME_CA_PATH}/tls/key.pem
 mv ${COIN_NAME_CA_PATH}/tls/*-cert.pem ${COIN_NAME_CA_PATH}/tls/cert.pem
 rm -rf $PEERS/cryptocurrency-org/tlsca
 
-WEBCERTS=$PROJPATH/configuration/certs
+WEBCERTS=$PROJPATH/crypto-config/configuration/certs
 rm -rf $WEBCERTS
 mkdir -p $WEBCERTS
 cp $PROJPATH/crypto-config/orderer/tls/ca.crt $WEBCERTS/ordererOrg.pem
@@ -93,9 +93,8 @@ rm -rf $BACKEND/set-up
 mkdir -p $BACKEND/set-up
 cp -r $WEBCERTS/set-up/* $BACKEND/set-up/
 
-rm -rf $CLIPATH
-
 cd $PROJPATH/crypto-config/configuration
 npm install
 node config.js
-cd ..
+cd $PROJPATH
+rm -rf $PROJPATH/crypto-config/cli
