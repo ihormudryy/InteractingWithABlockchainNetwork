@@ -10,8 +10,14 @@ CLIPATH=$PROJPATH/cli/peers
 ORDERERS=$CLIPATH/ordererOrganizations
 PEERS=$CLIPATH/peerOrganizations
 
+if [[ $(uname) = 'Darwin' ]]; then
+    PLATFORM="mac"
+else
+    PLATFORM="ubuntu"
+fi
+
 rm -rf $CLIPATH
-$PROJPATH/ubuntu/cryptogen generate --config=$PROJPATH/crypto-config.yaml --output=$CLIPATH
+$PROJPATH/$PLATFORM/cryptogen generate --config=$PROJPATH/crypto-config.yaml --output=$CLIPATH
 
 sh generate-cfgtx.sh
 
