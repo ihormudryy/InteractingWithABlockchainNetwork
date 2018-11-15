@@ -43,26 +43,26 @@ const config = {
     }
   }, {
     peer: {
-      hostname: '${COIN_NAME}-peer',
-      url: 'grpcs://${COIN_NAME}-peer:7051',
-      pem: readCryptoFile('${COIN_NAME}Org.pem'),
+      hostname: 'cryptocurrency-peer',
+      url: 'grpcs://cryptocurrency-peer:7051',
+      pem: readCryptoFile('cryptocurrencyOrg.pem'),
       userKeystoreDBName: 'user_db',
       userKeystoreDBUrl: 'http://ca-datastore:5984',
       stateDBName: 'member_db',
-      stateDBUrl: 'http://${COIN_NAME}-statedb:5984',
-      eventHubUrl: 'grpcs://${COIN_NAME}-peer:7053',
-      org: 'org.${COIN_NAME_CAMELCASE}Org',
+      stateDBUrl: 'http://cryptocurrency-statedb:5984',
+      eventHubUrl: 'grpcs://cryptocurrency-peer:7053',
+      org: 'org.cryptocurrencyOrg',
       userType: 'user'
     },
     ca: {
-      hostname: '${COIN_NAME}-ca',
-      url: 'https://${COIN_NAME}-ca:7054',
-      mspId: '${COIN_NAME_CAMELCASE}OrgMSP',
-      caName: '${COIN_NAME}-org'
+      hostname: 'cryptocurrency-ca',
+      url: 'https://cryptocurrency-ca:7054',
+      mspId: 'CryptocurrencyOrgMSP',
+      caName: 'cryptocurrency-org'
     },
     admin: {
-      key: readCryptoFile('Admin@${COIN_NAME}-org-key.pem'),
-      cert: readCryptoFile('Admin@${COIN_NAME}-org-cert.pem')
+      key: readCryptoFile('Admin@cryptocurrency-org-key.pem'),
+      cert: readCryptoFile('Admin@cryptocurrency-org-cert.pem')
     }
   }]
 };

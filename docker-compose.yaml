@@ -16,8 +16,8 @@ services:
         max-size: "1m"
         max-file: "10"
 
-  coin-statedb:
-    container_name: coin-statedb
+  cryptocurrency-statedb:
+    container_name: cryptocurrency-statedb
     image: hyperledger/fabric-couchdb:0.4.14
 #    image: ishangulhane/fabric-couchdb
     environment:
@@ -139,9 +139,9 @@ services:
         max-size: "1m"
         max-file: "10"
 
-  coin-ca:
-    container_name: coin-ca
-    image: coin-ca
+  cryptocurrency-ca:
+    container_name: cryptocurrency-ca
+    image: cryptocurrency-ca
     environment:
       - FABRIC_CA_HOME=/ca
     command: fabric-ca-server start
@@ -226,7 +226,7 @@ services:
       - CORE_PEER_ID=cryptocurrency-peer
       - CORE_PEER_ADDRESS=cryptocurrency-peer:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=cryptocurrency-peer:7051
-      - CORE_PEER_LOCALMSPID=${COIN_NAME_CAMELCASE}OrgMSP
+      - CORE_PEER_LOCALMSPID=CryptocurrencyOrgMSP
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=cryptocurrency-statedb:5984
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=

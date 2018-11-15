@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 echo
@@ -11,22 +11,22 @@ ORDERERS=$CLIPATH/ordererOrganizations
 PEERS=$CLIPATH/peerOrganizations
 
 rm -rf $CLIPATH
-$PROJPATH/cryptogen generate --config=$PROJPATH/crypto-config.yaml --output=$CLIPATH
+$PROJPATH/ubuntu/cryptogen generate --config=$PROJPATH/crypto-config.yaml --output=$CLIPATH
 
 sh generate-cfgtx.sh
 
-rm -rf $PROJPATH/{orderer,shopPeer,${COIN_NAME}Peer}/crypto
-mkdir $PROJPATH/{orderer,shopPeer,${COIN_NAME}Peer}/crypto
+rm -rf $PROJPATH/{orderer,shopPeer,cryptocurrencyPeer}/crypto
+mkdir $PROJPATH/{orderer,shopPeer,cryptocurrencyPeer}/crypto
 cp -r $ORDERERS/orderer-org/orderers/orderer0/{msp,tls} $PROJPATH/orderer/crypto
 cp -r $PEERS/shop-org/peers/shop-peer/{msp,tls} $PROJPATH/shopPeer/crypto
-cp -r $PEERS/${COIN_NAME}-org/peers/${COIN_NAME}-peer/{msp,tls} $PROJPATH/${COIN_NAME}Peer/crypto
+cp -r $PEERS/cryptocurrency-org/peers/cryptocurrency-org-peer/{msp,tls} $PROJPATH/cryptocurrencyPeer/crypto
 cp $CLIPATH/genesis.block $PROJPATH/orderer/crypto/
 
 SHOPCAPATH=$PROJPATH/shopCertificateAuthority
-COIN_NAMECAPATH=$PROJPATH/${COIN_NAME}CertificateAuthority
+COIN_NAME_CA_PATH=$PROJPATH/cryptocurrencyCertificateAuthority
 
-rm -rf {$SHOPCAPATH,${COIN_NAME}CAPATH}/{ca,tls}
-mkdir -p {$SHOPCAPATH,${COIN_NAME}CAPATH}/{ca,tls}
+rm -rf {$SHOPCAPATH,${COIN_NAME_CA_PATH}}/{ca,tlsca}
+mkdir -p {$SHOPCAPATH,${COIN_NAME_CA_PATH}}/{ca,tlsca}
 
 cp $PEERS/shop-org/ca/* $SHOPCAPATH/ca
 cp $PEERS/shop-org/tlsca/* $SHOPCAPATH/tls
@@ -35,23 +35,23 @@ mv $SHOPCAPATH/ca/*-cert.pem $SHOPCAPATH/ca/cert.pem
 mv $SHOPCAPATH/tls/*_sk $SHOPCAPATH/tls/key.pem
 mv $SHOPCAPATH/tls/*-cert.pem $SHOPCAPATH/tls/cert.pem
 
-cp $PEERS/${COIN_NAME}-org/ca/* ${COIN_NAME}CAPATH/ca
-cp $PEERS/${COIN_NAME}-org/tlsca/* ${COIN_NAME}CAPATH/tls
-mv ${COIN_NAME}CAPATH/ca/*_sk ${COIN_NAME}CAPATH/ca/key.pem
-mv ${COIN_NAME}CAPATH/ca/*-cert.pem ${COIN_NAME}CAPATH/ca/cert.pem
-mv ${COIN_NAME}CAPATH/tls/*_sk ${COIN_NAME}CAPATH/tls/key.pem
-mv ${COIN_NAME}CAPATH/tls/*-cert.pem ${COIN_NAME}CAPATH/tls/cert.pem
+cp $PEERS/cryptocurrency-org/ca/* ${COIN_NAME_CA_PATH}/ca
+cp $PEERS/cryptocurrency-org/tlsca/* ${COIN_NAME_CA_PATH}/tls
+mv ${COIN_NAME_CA_PATH}/ca/*_sk ${COIN_NAME_CA_PATH}/ca/key.pem
+mv ${COIN_NAME_CA_PATH}/ca/*-cert.pem ${COIN_NAME_CA_PATH}/ca/cert.pem
+mv ${COIN_NAME_CA_PATH}/tls/*_sk ${COIN_NAME_CA_PATH}/tls/key.pem
+mv ${COIN_NAME_CA_PATH}/tls/*-cert.pem ${COIN_NAME_CA_PATH}/tls/cert.pem
 
 WEBCERTS=$PROJPATH/configuration/certs
 rm -rf $WEBCERTS
 mkdir -p $WEBCERTS
 cp $PROJPATH/orderer/crypto/tls/ca.crt $WEBCERTS/ordererOrg.pem
 cp $PROJPATH/shopPeer/crypto/tls/ca.crt $WEBCERTS/shopOrg.pem
-cp $PROJPATH/${COIN_NAME}Peer/crypto/tls/ca.crt $WEBCERTS/${COIN_NAME}Org.pem
+cp $PROJPATH/cryptocurrencyPeer/crypto/tls/ca.crt $WEBCERTS/cryptocurrencyOrg.pem
 cp $PEERS/shop-org/users/Admin@shop-org/msp/keystore/* $WEBCERTS/Admin@shop-org-key.pem
 cp $PEERS/shop-org/users/Admin@shop-org/msp/signcerts/* $WEBCERTS/
-cp $PEERS/${COIN_NAME}-org/users/Admin@${COIN_NAME}-org/msp/keystore/* $WEBCERTS/Admin@${COIN_NAME}-org-key.pem
-cp $PEERS/${COIN_NAME}-org/users/Admin@${COIN_NAME}-org/msp/signcerts/* $WEBCERTS/
+cp $PEERS/cryptocurrency-org/users/Admin@cryptocurrency-org/msp/keystore/* $WEBCERTS/Admin@cryptocurrency-org-key.pem
+cp $PEERS/cryptocurrency-org/users/Admin@cryptocurrency-org/msp/signcerts/* $WEBCERTS/
 
 WEBCERTS=$PROJPATH/blockchainNetwork
 

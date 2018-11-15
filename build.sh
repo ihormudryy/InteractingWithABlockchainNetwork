@@ -3,9 +3,9 @@ export FABRIC_CFG_PATH=$PWD
 export COIN_NAME="mudryycoin"
 export COIN_NAME_CAMELCASE="MudryyCoin"
 
-sh ./clean.sh
-sh ./generate-certs.sh
-sh ./docker-images.sh
+bash ./clean.sh
+bash ./generate-certs.sh
+bash ./docker-images.sh
 docker-compose -p "${COIN_NAME}" up -d ${COIN_NAME}-peer
 sleep 20s
 docker-compose -p "${COIN_NAME}" up -d blockchain-setup
