@@ -86,7 +86,7 @@ c90b289a10e6        hyperledger/fabric-couchdb:x86_64-1.0.2                     
 
 **Command**
 ```bash
-docker logs cryptocurrency_cryptocurrency-backend_1
+docker logs mudryycoin_cryptocurrency-backend_1
 ```
 **Output:**
 ```

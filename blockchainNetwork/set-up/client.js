@@ -79,11 +79,14 @@ export class OrganizationClient extends EventEmitter {
   initEventHubs() {
     // Setup event hubs
     try {
-      const defaultEventHub = this._client.newEventHub();
+      //const defaultEventHub = this._client.newEventHub();
+      const defaultEventHub = this._channel.newChannelEventHub(this._peers[0]);
+      /*
       defaultEventHub.setPeerAddr(this._peerConfig.eventHubUrl, {
         pem: this._peerConfig.pem,
         'ssl-target-name-override': this._peerConfig.hostname
       });
+      */
       defaultEventHub.connect();
       defaultEventHub.registerBlockEvent(block => {
         this.emit('block', utils.unmarshalBlock(block));

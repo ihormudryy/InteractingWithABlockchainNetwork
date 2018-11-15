@@ -319,7 +319,7 @@ services:
     #container_name: cryptocurrency-backend
     image: backend
     environment:
-    - ORGID=org.${COIN_NAME_CAMELCASE}Org
+    - ORGID=org.CryptocurrencyOrg
     - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
     - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:amd64-1.3.0
     - SECRETSDIR=/run/secrets

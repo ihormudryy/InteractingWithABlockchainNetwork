@@ -17,7 +17,7 @@ else
 fi
 
 rm -rf $CLIPATH
-$PROJPATH/$PLATFORM/cryptogen generate --config=$PROJPATH/crypto-config.yaml --output=$CLIPATH
+$PROJPATH/generators/$PLATFORM/cryptogen generate --config=$PROJPATH/crypto-config.yaml --output=$CLIPATH
 
 sh generate-cfgtx.sh
 
@@ -25,7 +25,7 @@ rm -rf $PROJPATH/{orderer,shopPeer,cryptocurrencyPeer}/crypto
 mkdir $PROJPATH/{orderer,shopPeer,cryptocurrencyPeer}/crypto
 cp -r $ORDERERS/orderer-org/orderers/orderer0/{msp,tls} $PROJPATH/orderer/crypto
 cp -r $PEERS/shop-org/peers/shop-peer/{msp,tls} $PROJPATH/shopPeer/crypto
-cp -r $PEERS/cryptocurrency-org/peers/cryptocurrency-org-peer/{msp,tls} $PROJPATH/cryptocurrencyPeer/crypto
+cp -r $PEERS/cryptocurrency-org/peers/cryptocurrency-peer/{msp,tls} $PROJPATH/cryptocurrencyPeer/crypto
 cp $CLIPATH/genesis.block $PROJPATH/orderer/crypto/
 
 SHOPCAPATH=$PROJPATH/shopCertificateAuthority

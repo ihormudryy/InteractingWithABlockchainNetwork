@@ -6,7 +6,7 @@ export COIN_NAME_CAMELCASE="MudryyCoin"
 bash ./clean.sh
 bash ./generate-certs.sh
 bash ./docker-images.sh
-docker-compose -p "${COIN_NAME}" up -d ${COIN_NAME}-peer
+docker-compose -p "${COIN_NAME}" up -d cryptocurrency-peer
 sleep 20s
 docker-compose -p "${COIN_NAME}" up -d blockchain-setup
 sleep 30s

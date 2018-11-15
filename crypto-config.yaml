@@ -18,7 +18,7 @@ PeerOrgs:
 - Name: CryptocurrencyOrg
   Domain: cryptocurrency-org
   Specs:
-  - Hostname: cryptocurrency-org-peer
+  - Hostname: cryptocurrency-peer
     CommonName: "{{.Hostname}}"
   Template:
     Count: 2

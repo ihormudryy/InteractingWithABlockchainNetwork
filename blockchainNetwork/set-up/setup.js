@@ -66,7 +66,7 @@ function getAdminOrgs() {
     try {
       await getAdminOrgs();
       const socketPath = process.env.DOCKER_SOCKET_PATH || (process.platform === 'win32' ? '//./pipe/docker_engine' : '/var/run/docker.sock');
-      const ccenvImage = process.env.DOCKER_CCENV_IMAGE || 'hyperledger/fabric-ccenv:x86_64-1.0.2';
+      const ccenvImage = process.env.DOCKER_CCENV_IMAGE || 'hyperledger/fabric-ccenv:amd64-1.3.0';
       const listOpts = {
         socketPath,
         method: 'GET',
