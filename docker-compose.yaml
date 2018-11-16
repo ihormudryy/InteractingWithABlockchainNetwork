@@ -9,6 +9,7 @@ services:
       - COUCHDB_PASSWORD=
     ports:
       - 5984:5984
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -23,6 +24,7 @@ services:
       - COUCHDB_PASSWORD=
     ports:
       - 8984:5984
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -37,6 +39,7 @@ services:
       - COUCHDB_PASSWORD=
     ports:
       - 9984:5984
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -52,6 +55,7 @@ services:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
       - RABBITMQ_DEFAULT_VHOST=/
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -69,6 +73,7 @@ services:
     volumes:
       - ./rabbitCluster/cluster-entrypoint.sh:/usr/local/bin/cluster-entrypoint.sh
     entrypoint: /usr/local/bin/cluster-entrypoint.sh
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -86,6 +91,7 @@ services:
     volumes:
       - ./rabbitCluster/cluster-entrypoint.sh:/usr/local/bin/cluster-entrypoint.sh
     entrypoint: /usr/local/bin/cluster-entrypoint.sh
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -105,6 +111,7 @@ services:
     ports:
       - 15672:15672
       - 5672:5672
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -116,6 +123,7 @@ services:
      image: redis-server
      ports:
        - '7000-7005:7000-7005'
+     restart: unless-stopped
      logging:
        driver: "json-file"
        options:
@@ -132,6 +140,7 @@ services:
       - 7054:7054
     volumes:
       - ./crypto-config/shopCA:/etc/hyperledger/fabric-ca-server
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -148,6 +157,7 @@ services:
       - 8054:7054
     volumes:
       - ./crypto-config/cryptocurrencyCA:/etc/hyperledger/fabric-ca-server
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -174,6 +184,7 @@ services:
       - 7050:7050
     volumes:
       - ./crypto-config/orderer:/etc/hyperledger/configtx
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -206,6 +217,7 @@ services:
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/configtx/tls/ca.crt
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: peer node start
+    restart: unless-stopped
     volumes:
       - /var/run/:/host/var/run/
       - ./crypto-config/shopPeer:/etc/hyperledger/configtx
@@ -225,7 +237,7 @@ services:
 
   cryptocurrency-peer:
     container_name: cryptocurrency-peer
-    image: hyperledger/fabric-peer
+    image: hyperledger/fabric-peer:amd64-1.3.0
     environment:
       - CORE_PEER_ID=cryptocurrency-peer
       - CORE_PEER_ADDRESS=cryptocurrency-peer:7051
@@ -249,6 +261,7 @@ services:
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/configtx/tls/ca.crt
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: peer node start
+    restart: unless-stopped
     volumes:
       - /var/run/:/host/var/run/
       - ./crypto-config/cryptocurrencyPeer:/etc/hyperledger/configtx
@@ -271,20 +284,21 @@ services:
     container_name: blockchain-setup
     image: blockchain-setup
     environment:
-    - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
-    - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:amd64-1.3.0
-    - SECRETSDIR=/run/secrets
+      - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
+      - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:amd64-1.3.0
+      - SECRETSDIR=/run/secrets
     volumes:
-    - /var/run/:/host/var/run/
+      - /var/run/:/host/var/run/
+    restart: unless-stopped
     depends_on:
-    - orderer0
-    - shop-ca
-    - shop-peer
-    - cryptocurrency-ca
-    - cryptocurrency-peer
-    - ca-datastore
-    - shop-statedb
-    - cryptocurrency-statedb
+      - orderer0
+      - shop-ca
+      - shop-peer
+      - cryptocurrency-ca
+      - cryptocurrency-peer
+      - ca-datastore
+      - shop-statedb
+      - cryptocurrency-statedb
     secrets:
       - config
       - channel
@@ -293,24 +307,25 @@ services:
     container_name: shop-backend
     image: backend
     environment:
-    - ORGID=org.ShopOrg
-    - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
-    - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:amd64-1.3.0
-    - SECRETSDIR=/run/secrets
-    - RABBITMQQUEUE=seller_queue
-    - SOCKETPORT=3030
-    - MESSAGEEXPIRY=400
-    - EVENTEMITTER=true
-    - SENDTOIOT=false
-    - SCALECLIENT=1
+      - ORGID=org.ShopOrg
+      - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
+      - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:amd64-1.3.0
+      - SECRETSDIR=/run/secrets
+      - RABBITMQQUEUE=seller_queue
+      - SOCKETPORT=3030
+      - MESSAGEEXPIRY=400
+      - EVENTEMITTER=true
+      - SENDTOIOT=false
+      - SCALECLIENT=1
     ports:
-    - 3030:3030
+      - 3030:3030
     volumes:
-    - /var/run/:/host/var/run/
+      - /var/run/:/host/var/run/
+    restart: unless-stopped
     depends_on:
-    - blockchain-setup
-    - rabbitmq
-    - redis-server
+      - blockchain-setup
+      - rabbitmq
+      - redis-server
     secrets:
       - config
       - channel
@@ -324,20 +339,21 @@ services:
     container_name: cryptocurrency-backend
     image: backend
     environment:
-    - ORGID=org.CryptocurrencyOrg
-    - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
-    - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:amd64-1.3.0
-    - SECRETSDIR=/run/secrets
-    - RABBITMQQUEUE=user_queue
-    - MESSAGEEXPIRY=400
-    - SENDTOIOT=false
-    - SCALECLIENT=3
+      - ORGID=org.CryptocurrencyOrg
+      - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
+      - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:amd64-1.3.0
+      - SECRETSDIR=/run/secrets
+      - RABBITMQQUEUE=user_queue
+      - MESSAGEEXPIRY=400
+      - SENDTOIOT=false
+      - SCALECLIENT=3
     volumes:
-    - /var/run/:/host/var/run/
+      - /var/run/:/host/var/run/
+    restart: unless-stopped
     depends_on:
-    - blockchain-setup
-    - rabbitmq
-    - redis-server
+      - blockchain-setup
+      - rabbitmq
+      - redis-server
     secrets:
       - config
       - channel
@@ -352,16 +368,17 @@ services:
     image: rabbit-client
     hostname: rabbitclient1
     environment:
-    - SECRETSDIR=/run/secrets
-    - PORT=3000
+      - SECRETSDIR=/run/secrets
+      - PORT=3000
     ports:
-    - 3001:3000
+      - 3001:3000
     depends_on:
-    - redis-server
-    - rabbitmq
+      - redis-server
+      - rabbitmq
     secrets:
       - config
       - channel
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -373,16 +390,17 @@ services:
     image: rabbit-client
     hostname: rabbitclient2
     environment:
-    - SECRETSDIR=/run/secrets
-    - PORT=3000
+      - SECRETSDIR=/run/secrets
+      - PORT=3000
     ports:
-    - 3002:3000
+      - 3002:3000
     depends_on:
-    - redis-server
-    - rabbitmq
+      - redis-server
+      - rabbitmq
     secrets:
       - config
       - channel
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -394,16 +412,17 @@ services:
     image: rabbit-client
     hostname: rabbitclient3
     environment:
-    - SECRETSDIR=/run/secrets
-    - PORT=3000
+      - SECRETSDIR=/run/secrets
+      - PORT=3000
     ports:
-    - 3003:3000
+      - 3003:3000
     depends_on:
-    - redis-server
-    - rabbitmq
+      - redis-server
+      - rabbitmq
     secrets:
       - config
       - channel
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -422,6 +441,7 @@ services:
       - rabbitclient3
     ports:
       - 3000:3000
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -443,6 +463,7 @@ services:
       - CORE_CHAINCODE_KEEPALIVE=10
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: /bin/bash
+    restart: unless-stopped
     volumes:
       - /var/run/:/host/var/run/
       - ./crypto-config/cryptocurrencyPeer:/opt/gopath/src/github.com/hyperledger/fabric/peer

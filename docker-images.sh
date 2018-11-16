@@ -59,11 +59,6 @@ if [ $BUILD ];
     echo '############################################################'
     echo '#                 BUILDING CONTAINER IMAGES                #'
     echo '############################################################'
-    #docker build -t orderer-peer:latest orderer/
-    #docker build -t shop-peer:latest shopPeer/
-    #docker build -t cryptocurrency-peer:latest cryptocurrencyPeer/
-    #docker build -t shop-ca:latest shopCertificateAuthority/
-    #docker build -t cryptocurrency-ca:latest cryptocurrencyCertificateAuthority/
     docker build -t blockchain-setup:latest blockchainNetwork/
     docker build -t rabbit-client:latest rabbitClient/
     docker build -t redis-server:latest redisCluster/
