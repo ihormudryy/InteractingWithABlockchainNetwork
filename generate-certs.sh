@@ -7,7 +7,7 @@ CRYPTO_CONF="$PROJPATH/crypto-config"
 CLIPATH=$CRYPTO_CONF/cli/peers
 ORDERERS=$CLIPATH/ordererOrganizations
 PEERS=$CLIPATH/peerOrganizations
-FABRIC_CFG_PATH="$CRYPTO_CONF"
+export FABRIC_CFG_PATH="$CRYPTO_CONF"
 if [[ $(uname) = 'Darwin' ]]; then
     PLATFORM="mac"
 else
@@ -54,28 +54,28 @@ cp -r $PEERS/shop-org/peers/shop-peer/{msp,tls} $CRYPTO_CONF/shopPeer
 cp -r $PEERS/cryptocurrency-org/peers/cryptocurrency-peer/{msp,tls} $CRYPTO_CONF/cryptocurrencyPeer
 cp $CLIPATH/genesis.block $CRYPTO_CONF/orderer
 
-SHOP_CA_PATH=$CRYPTO_CONF/shopCA
-COIN_NAME_CA_PATH=$CRYPTO_CONF/cryptocurrencyCA
+SHOP_CA_PATH=$CRYPTO_CONF/shopCA/ca
+COIN_NAME_CA_PATH=$CRYPTO_CONF/cryptocurrencyCA/ca
 
-rm -rf {$SHOP_CA_PATH,${COIN_NAME_CA_PATH}}/{ca,tlsca}
-mkdir -p {$SHOP_CA_PATH,${COIN_NAME_CA_PATH}}/{ca,tlsca}
+rm -rf {$SHOP_CA_PATH,${COIN_NAME_CA_PATH}}/{ca,tlsca,tls}
+mkdir -p {$SHOP_CA_PATH,${COIN_NAME_CA_PATH}}/{ca,tlsca,tls}
 
-cp -r $PEERS/shop-org/ca/ $SHOP_CA_PATH/ca
-cp -r $PEERS/shop-org/tlsca/ $SHOP_CA_PATH/tls
+cp -r $PEERS/shop-org/ca/* $SHOP_CA_PATH/ca
+cp -r $PEERS/shop-org/tlsca/* $SHOP_CA_PATH/tls
 mv $SHOP_CA_PATH/ca/*_sk $SHOP_CA_PATH/ca/key.pem
 mv $SHOP_CA_PATH/ca/*-cert.pem $SHOP_CA_PATH/ca/cert.pem
 mv $SHOP_CA_PATH/tls/*_sk $SHOP_CA_PATH/tls/key.pem
 mv $SHOP_CA_PATH/tls/*-cert.pem $SHOP_CA_PATH/tls/cert.pem
-cp -r $CRYPTO_CONF/configuration/fabric-ca-server-configs/shop/*.yaml $SHOP_CA_PATH
+cp -r $CRYPTO_CONF/configuration/fabric-ca-server-configs/shop/*.yaml ${SHOP_CA_PATH}/../
 rm -rf $SHOP_CA_PATH/tlsca
 
-cp -r $PEERS/cryptocurrency-org/ca/ ${COIN_NAME_CA_PATH}/ca
-cp -r $PEERS/cryptocurrency-org/tlsca/ ${COIN_NAME_CA_PATH}/tls
+cp -r $PEERS/cryptocurrency-org/ca/* ${COIN_NAME_CA_PATH}/ca
+cp -r $PEERS/cryptocurrency-org/tlsca/* ${COIN_NAME_CA_PATH}/tls
 mv ${COIN_NAME_CA_PATH}/ca/*_sk ${COIN_NAME_CA_PATH}/ca/key.pem
 mv ${COIN_NAME_CA_PATH}/ca/*-cert.pem ${COIN_NAME_CA_PATH}/ca/cert.pem
 mv ${COIN_NAME_CA_PATH}/tls/*_sk ${COIN_NAME_CA_PATH}/tls/key.pem
 mv ${COIN_NAME_CA_PATH}/tls/*-cert.pem ${COIN_NAME_CA_PATH}/tls/cert.pem
-cp -r $CRYPTO_CONF/configuration/fabric-ca-server-configs/cryptocurrency/*.yaml $COIN_NAME_CA_PATH
+cp -r $CRYPTO_CONF/configuration/fabric-ca-server-configs/cryptocurrency/*.yaml ${COIN_NAME_CA_PATH}/../
 rm -rf $COIN_NAME_CA_PATH/tlsca
 
 WEBCERTS=$CRYPTO_CONF/configuration/certs

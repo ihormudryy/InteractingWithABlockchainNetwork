@@ -6,7 +6,7 @@ Profiles:
       Organizations:
       - *OrdererOrg
     Consortiums:
-      $CryptocurrencyConsortium:
+      CryptocurrencyConsortium:
         Organizations:
         - *ShopOrg
         - *CryptocurrencyOrg

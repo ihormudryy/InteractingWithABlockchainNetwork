@@ -131,7 +131,7 @@ services:
     ports:
       - 7054:7054
     volumes:
-      - ./crypto-config/shopCA:/etc/hyperledger/fabric-ca-config
+      - ./crypto-config/shopCA:/etc/hyperledger/fabric-ca-server
     logging:
       driver: "json-file"
       options:
@@ -147,7 +147,7 @@ services:
     ports:
       - 8054:7054
     volumes:
-      - ./crypto-config/cryptocurrencyCA:/etc/hyperledger/fabric-ca-config
+      - ./crypto-config/cryptocurrencyCA:/etc/hyperledger/fabric-ca-server
     logging:
       driver: "json-file"
       options:
