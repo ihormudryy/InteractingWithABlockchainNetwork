@@ -44,7 +44,7 @@ const config = {
   }, {
     peer: {
       hostname: 'cryptocurrency-peer',
-      url: 'grpcs://cryptocurrency-peer:7051',
+      url: 'grpcs://cryptocurrency-peer:8051',
       pem: readCryptoFile('cryptocurrencyOrg.pem'),
       userKeystoreDBName: 'user_db',
       userKeystoreDBUrl: 'http://ca-datastore:5984',
@@ -56,7 +56,7 @@ const config = {
     },
     ca: {
       hostname: 'cryptocurrency-ca',
-      url: 'https://cryptocurrency-ca:7054',
+      url: 'https://cryptocurrency-ca:8054',
       mspId: 'CryptocurrencyOrgMSP',
       caName: 'cryptocurrency-org'
     },
@@ -68,9 +68,9 @@ const config = {
 };
 if(process.env.LOCALCONFIG) {
   config.orderer.url = 'grpcs://localhost:7050';
-  config.peers[0].peer.url = 'grpcs://localhost:7051';
+  config.peers[0].peer.url = 'grpcs://localhost:8051';
   config.peers[0].peer.eventHubUrl = 'grpcs://localhost:7053';
-  config.peers[0].ca.url = 'https://localhost:7054';
+  config.peers[0].ca.url = 'https://localhost:5984';
   config.peers[0].peer.userKeystoreDBUrl = 'http://localhost:5984';
   config.peers[0].peer.stateDBUrl = 'http://localhost:9984';
   config.peers[1].peer.url = 'grpcs://localhost:8051';

@@ -1,5 +1,5 @@
-# Server's listening port (default: 7054)
-port: 7054
+# Server's listening port (default: 8054)
+port: 8054
 
 # Enables debug logging (default: false)
 debug: false

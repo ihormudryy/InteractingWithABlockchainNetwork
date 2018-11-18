@@ -8,7 +8,7 @@ export default async function (userId, clientObject, chaincodeId, chaincodeVersi
       var user = await clientObject._client.getUserContext(userId, true);
       return user;
     } catch(e) {
-      if(count > 2) {
+      if(count > 5) {
         count++;
         return getUser(clientObject, userId, count);
       } else {
@@ -20,7 +20,7 @@ export default async function (userId, clientObject, chaincodeId, chaincodeVersi
   if(!(user_from_store && user_from_store.isEnrolled())) {
     throw new Error('Failed to get user : ' + userId + ' from persistence');
   }
-  //console.log('Successfully loaded user : ' + userId + ' from persistence');
+  console.log('Successfully loaded user : ' + userId + ' from persistence');
   let proposalResponses, proposal;
   const txId = new Transaction(user_from_store);
   try {
@@ -90,10 +90,10 @@ export default async function (userId, clientObject, chaincodeId, chaincodeVersi
     });
     promises.push(txPromise);
     var results = await Promise.all(promises);
-    //console.log('Send transaction promise and event listener promise have completed');
+    console.log('Send transaction promise and event listener promise have completed');
     // check the results in the order the promises were added to the promise all list
     if(!(results && results[0] && results[0].status === 'SUCCESS')) {
-      //console.log('Successfully sent transaction to the orderer.');
+      console.log('Successfully sent transaction to the orderer.');
       throw new Error('Failed to order the transaction. Error code: ' + results.status);
     }
     if(results && results[1] && results[1].event_status === 'VALID') {

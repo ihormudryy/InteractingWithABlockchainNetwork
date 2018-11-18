@@ -35,7 +35,7 @@ bash ./generate-certs.sh
 bash ./docker-images.sh
 
 docker-compose -p "${COIN_NAME}" up -d cryptocurrency-peer
-sleep 50s
+sleep 20s
 docker-compose -p "${COIN_NAME}" up -d blockchain-setup
 sleep 30s
 docker-compose -p "${COIN_NAME}" up -d rabbitmq

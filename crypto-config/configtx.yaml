@@ -36,7 +36,7 @@ Organizations:
   MSPDir: cli/peers/peerOrganizations/cryptocurrency-org/msp
   AnchorPeers:
   - Host: cryptocurrency-peer
-    Port: 7051
+    Port: 8051
 
 Orderer: &OrdererDefaults
   OrdererType: solo

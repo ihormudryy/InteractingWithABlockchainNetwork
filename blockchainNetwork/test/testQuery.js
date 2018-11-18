@@ -1,9 +1,11 @@
 'use strict';
+
 import config from '../set-up/config';
 import {
   OrganizationClient
 } from '../set-up/client';
 import queryFunc from '../set-up/query';
+
 const objArray = config.peers.map(obj => new OrganizationClient(config.channelName, config.orderer, obj.peer, obj.ca, obj.admin));
 (async () => {
   try {
