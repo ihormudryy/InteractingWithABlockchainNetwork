@@ -2,6 +2,10 @@
 export FABRIC_CFG_PATH=$PWD
 export COIN_NAME="mudryycoin"
 export COIN_NAME_CAMELCASE="MudryyCoin"
+export DB_ADMIN=""
+export DB_PASSWORD=""
+export RABBITMQ_USER="guest"
+export RABBITMQ_PASS="guest"
 
 clean(){
     docker rm -f $(docker ps -aq)
@@ -47,3 +51,10 @@ sleep 1s
 docker-compose -p "${COIN_NAME}" up -d --scale ${COIN_NAME}-backend=5
 sleep 1s
 docker ps
+
+containers=$(docker ps --format "{{.Names}}")
+rm -rf ./Docker_Container_Logs && mkdir ./Docker_Container_Logs
+for CONTAINER in ${containers[*]}; do
+    docker logs $CONTAINER &> ./Docker_Container_Logs/$CONTAINER.log
+done
+echo "Logs can be found in Docker_Container_Logs dir"

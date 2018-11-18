@@ -69,8 +69,8 @@ export class OrganizationClient extends EventEmitter {
         affiliationOrg: this._peerConfig.org,
         noOfAttempts: 5
       });
-      //await this._client.setUserContext(this._adminUser);
-      //await this.createOrgAdmin();
+      await this._client.setUserContext(this._adminUser);
+      await this.createOrgAdmin();
     } catch(e) {
       console.log(`Failed to enroll user. Error: ${e.message}`);
       throw e;
@@ -88,9 +88,9 @@ export class OrganizationClient extends EventEmitter {
       });
       */
       defaultEventHub.connect();
-      defaultEventHub.registerBlockEvent(block => {
+      /*defaultEventHub.registerBlockEvent(block => {
         this.emit('block', utils.unmarshalBlock(block));
-      });
+      });*/
       this._eventHubs.push(defaultEventHub);
     } catch(e) {
       console.log(`Failed to configure event hubs. Error ${e.message}`);

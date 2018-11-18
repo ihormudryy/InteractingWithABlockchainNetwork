@@ -5,11 +5,13 @@ services:
     container_name: ca-datastore
     image: hyperledger/fabric-couchdb:0.4.14
     environment:
-      - COUCHDB_USER=
-      - COUCHDB_PASSWORD=
+      - COUCHDB_USER=${DB_ADMIN}
+      - COUCHDB_PASSWORD=${DB_PASSWORD}
     ports:
       - 5984:5984
     restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime
     logging:
       driver: "json-file"
       options:
@@ -20,11 +22,13 @@ services:
     container_name: cryptocurrency-statedb
     image: hyperledger/fabric-couchdb:0.4.14
     environment:
-      - COUCHDB_USER=
-      - COUCHDB_PASSWORD=
+      - COUCHDB_USER=${DB_ADMIN}
+      - COUCHDB_PASSWORD=${DB_PASSWORD}
     ports:
       - 8984:5984
     restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime
     logging:
       driver: "json-file"
       options:
@@ -35,11 +39,13 @@ services:
     container_name: shop-statedb
     image: hyperledger/fabric-couchdb:0.4.14
     environment:
-      - COUCHDB_USER=
-      - COUCHDB_PASSWORD=
+      - COUCHDB_USER=${DB_ADMIN}
+      - COUCHDB_PASSWORD=${DB_PASSWORD}
     ports:
       - 9984:5984
     restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime
     logging:
       driver: "json-file"
       options:
@@ -52,10 +58,12 @@ services:
     hostname: rabbitmq1
     environment:
       - RABBITMQ_ERLANG_COOKIE=6ad0a617cb89413daa0a
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
       - RABBITMQ_DEFAULT_VHOST=/
     restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime
     logging:
       driver: "json-file"
       options:
@@ -72,6 +80,7 @@ services:
       - RABBITMQ_ERLANG_COOKIE=6ad0a617cb89413daa0a
     volumes:
       - ./rabbitCluster/cluster-entrypoint.sh:/usr/local/bin/cluster-entrypoint.sh
+      - /etc/localtime:/etc/localtime
     entrypoint: /usr/local/bin/cluster-entrypoint.sh
     restart: unless-stopped
     logging:
@@ -90,6 +99,7 @@ services:
       - RABBITMQ_ERLANG_COOKIE=6ad0a617cb89413daa0a
     volumes:
       - ./rabbitCluster/cluster-entrypoint.sh:/usr/local/bin/cluster-entrypoint.sh
+      - /etc/localtime:/etc/localtime
     entrypoint: /usr/local/bin/cluster-entrypoint.sh
     restart: unless-stopped
     logging:
@@ -104,6 +114,7 @@ services:
     image: haproxy:1.7
     volumes:
       - ./rabbitServerClusterHAProxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - /etc/localtime:/etc/localtime
     depends_on:
       - rabbitmq1
       - rabbitmq2
@@ -119,16 +130,18 @@ services:
         max-file: "10"
 
   redis-server:
-     hostname: redis-server
-     image: redis-server
-     ports:
-       - '7000-7005:7000-7005'
-     restart: unless-stopped
-     logging:
-       driver: "json-file"
-       options:
-         max-size: "1m"
-         max-file: "10"
+    hostname: redis-server
+    image: redis-server
+    ports:
+      - '7000-7005:7000-7005'
+    restart: unless-stopped
+    volumes:
+     - /etc/localtime:/etc/localtime
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "10"
 
   shop-ca:
     container_name: shop-ca
@@ -140,6 +153,7 @@ services:
       - 7054:7054
     volumes:
       - ./crypto-config/shopCA:/etc/hyperledger/fabric-ca-server
+      - /etc/localtime:/etc/localtime
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -157,6 +171,7 @@ services:
       - 8054:7054
     volumes:
       - ./crypto-config/cryptocurrencyCA:/etc/hyperledger/fabric-ca-server
+      - /etc/localtime:/etc/localtime
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -184,6 +199,7 @@ services:
       - 7050:7050
     volumes:
       - ./crypto-config/orderer:/etc/hyperledger/configtx
+      - /etc/localtime:/etc/localtime
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -201,10 +217,10 @@ services:
       - CORE_PEER_LOCALMSPID=ShopOrgMSP
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=shop-statedb:5984
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=${DB_ADMIN}
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=${DB_PASSWORD}
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=cryptocurrency_default
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COIN_NAME}_default
       - CORE_LOGGING_LEVEL=DEBUG
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_ENDORSER_ENABLED=true
@@ -221,6 +237,7 @@ services:
     volumes:
       - /var/run/:/host/var/run/
       - ./crypto-config/shopPeer:/etc/hyperledger/configtx
+      - /etc/localtime:/etc/localtime
     ports:
       - 7051:7051
       - 7053:7053
@@ -245,10 +262,10 @@ services:
       - CORE_PEER_LOCALMSPID=CryptocurrencyOrgMSP
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=cryptocurrency-statedb:5984
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=${DB_ADMIN}
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=${DB_PASSWORD}
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=cryptocurrency_default
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COIN_NAME}_default
       - CORE_LOGGING_LEVEL=DEBUG
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_ENDORSER_ENABLED=true
@@ -265,6 +282,7 @@ services:
     volumes:
       - /var/run/:/host/var/run/
       - ./crypto-config/cryptocurrencyPeer:/etc/hyperledger/configtx
+      - /etc/localtime:/etc/localtime
     ports:
       - 8051:7051
       - 8053:7053
@@ -289,7 +307,7 @@ services:
       - SECRETSDIR=/run/secrets
     volumes:
       - /var/run/:/host/var/run/
-    restart: unless-stopped
+    #restart: unless-stopped
     depends_on:
       - orderer0
       - shop-ca
@@ -302,6 +320,11 @@ services:
     secrets:
       - config
       - channel
+    logging:
+       driver: "json-file"
+       options:
+         max-size: "1m"
+         max-file: "10"
 
   shop-backend :
     container_name: shop-backend
@@ -321,7 +344,7 @@ services:
       - 3030:3030
     volumes:
       - /var/run/:/host/var/run/
-    restart: unless-stopped
+    #restart: unless-stopped
     depends_on:
       - blockchain-setup
       - rabbitmq
@@ -349,7 +372,7 @@ services:
       - SCALECLIENT=3
     volumes:
       - /var/run/:/host/var/run/
-    restart: unless-stopped
+    #restart: unless-stopped
     depends_on:
       - blockchain-setup
       - rabbitmq
@@ -379,6 +402,8 @@ services:
       - config
       - channel
     restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime
     logging:
       driver: "json-file"
       options:
@@ -401,6 +426,8 @@ services:
       - config
       - channel
     restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime
     logging:
       driver: "json-file"
       options:
@@ -423,6 +450,8 @@ services:
       - config
       - channel
     restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime
     logging:
       driver: "json-file"
       options:
@@ -434,6 +463,7 @@ services:
     hostname: rabbitclient
     image: haproxy:1.7
     volumes:
+      - /etc/localtime:/etc/localtime
       - ./rabbitClientHAProxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     depends_on:
       - rabbitclient1
@@ -447,26 +477,6 @@ services:
       options:
         max-size: "1m"
         max-file: "10"
-
-  cli:
-    container_name: cli
-    image: hyperledger/fabric-tools:amd64-1.3.0
-    tty: true
-    environment:
-      - GOPATH=/opt/gopath
-      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_LOGGING_LEVEL=info
-      - CORE_PEER_ID=cli
-      - CORE_PEER_ADDRESS=cryptocurrency-peer:8051
-      - CORE_PEER_LOCALMSPID=CryptocurrencyOrgMSP
-      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/msp/admincerts/Admin@cryptocurrency-org-cert.pem
-      - CORE_CHAINCODE_KEEPALIVE=10
-    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-    command: /bin/bash
-    restart: unless-stopped
-    volumes:
-      - /var/run/:/host/var/run/
-      - ./crypto-config/cryptocurrencyPeer:/opt/gopath/src/github.com/hyperledger/fabric/peer
 
 secrets:
   config:

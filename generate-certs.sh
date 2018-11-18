@@ -100,4 +100,3 @@ cd $CRYPTO_CONF/configuration
 npm install
 node config.js
 cd $PROJPATH
-rm -rf $CRYPTO_CONF/cli
