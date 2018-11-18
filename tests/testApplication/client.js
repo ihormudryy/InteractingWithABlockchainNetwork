@@ -60,13 +60,13 @@ var ids = ["8b280ce1-6717-43e3-b8b2-adf85b0bbf96", "c1eb016c-d9a3-4bc6-a530-5816
 var base = 1000;
 var queue = 'user_queue';
 
-function generateCoins(ids, inc, queue) {
+function generateCryptocoins(ids, inc, queue) {
   for(var i = 0; i < ids.length; i++) {
     requestServer({
       type: "invoke",
       params: {
         "userId": ids[i],
-        "fcn": "generateFitcoins",
+        "fcn": "generateCryptocoins",
         "args": [ids[i], (base + inc).toString()]
       }
     }, queue);
@@ -91,9 +91,9 @@ params:{"userId" : "c468865f-586d-4b28-8075-cccd1f43a720" , "fcn" : "generateFit
 
 */
 getValues(ids, queue);
-generateCoins(ids, 4000, queue);
+generateCryptocoins(ids, 4000, queue);
 getValues(ids, queue);
-generateCoins(ids, 5000, queue);
+generateCryptocoins(ids, 5000, queue);
 getValues(ids, queue);
-generateCoins(ids, 6000, queue);
+generateCryptocoins(ids, 6000, queue);
 getValues(ids, queue);

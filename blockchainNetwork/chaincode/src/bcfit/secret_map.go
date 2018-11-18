@@ -47,7 +47,7 @@ type SimpleChaincode struct {
 type Member struct {
 	Id              string `json:"id"`
 	Type            string `json:"memberType"`
-	FitcoinsBalance int    `json:"${COIN_NAME}sBalance"`
+	CryptocoinsBalance int `json:"CryptocoinsBalance"`
 }
 
 // User
@@ -121,10 +121,10 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	//call functions
 	if function == "createMember" {
 		return t.createMember(stub, args)
-	} else if function == "generateFitcoins" {
-		return t.generateFitcoins(stub, args)
-	} else if function == "awardFitcoins" {
-		return t.awardFitcoins(stub, args)
+	} else if function == "generateCryptocoins" {
+		return t.generateCryptocoins(stub, args)
+	} else if function == "awardCryptocoins" {
+		return t.awardCryptocoins(stub, args)
 	} else if function == "getState" {
 		return t.getState(stub, args)
 	} else if function == "createProduct" {

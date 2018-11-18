@@ -6,6 +6,8 @@ export DB_ADMIN=""
 export DB_PASSWORD=""
 export RABBITMQ_USER="guest"
 export RABBITMQ_PASS="guest"
+export CA_TAG="amd64-1.3.0"
+export FABRIC_TAG="amd64-0.4.14"
 
 clean(){
     docker rm -f $(docker ps -aq)
@@ -13,7 +15,7 @@ clean(){
     for i in "${images[@]}"
     do
         echo Removing image : $i
-      docker rmi -f $i
+        docker rmi -f $i
     done
 
     #docker rmi -f $(docker images | grep none)
@@ -21,7 +23,7 @@ clean(){
     for i in "${images[@]}"
     do
         echo Removing image : $i
-      docker rmi -f $(docker images | grep $i )
+        docker rmi -f $(docker images | grep $i )
     done
 
     docker rmi $(docker images -f "dangling=true" -q)
@@ -33,7 +35,7 @@ bash ./generate-certs.sh
 bash ./docker-images.sh
 
 docker-compose -p "${COIN_NAME}" up -d cryptocurrency-peer
-sleep 20s
+sleep 50s
 docker-compose -p "${COIN_NAME}" up -d blockchain-setup
 sleep 30s
 docker-compose -p "${COIN_NAME}" up -d rabbitmq
@@ -52,7 +54,7 @@ docker-compose -p "${COIN_NAME}" up -d --scale ${COIN_NAME}-backend=5
 sleep 1s
 docker ps
 
-containers=$(docker ps --format "{{.Names}}")
+containers=$(docker ps -a --format "{{.Names}}")
 rm -rf ./Docker_Container_Logs && mkdir ./Docker_Container_Logs
 for CONTAINER in ${containers[*]}; do
     docker logs $CONTAINER &> ./Docker_Container_Logs/$CONTAINER.log

@@ -3,8 +3,11 @@ version: "3.1"
 services:
   ca-datastore:
     container_name: ca-datastore
-    image: hyperledger/fabric-couchdb:0.4.14
+    #image: hyperledger/fabric-couchdb:${FABRIC_TAG}
+    image: ishangulhane/fabric-couchdb
     environment:
+      # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+      # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
       - COUCHDB_USER=${DB_ADMIN}
       - COUCHDB_PASSWORD=${DB_PASSWORD}
     ports:
@@ -20,7 +23,8 @@ services:
 
   cryptocurrency-statedb:
     container_name: cryptocurrency-statedb
-    image: hyperledger/fabric-couchdb:0.4.14
+    #image: hyperledger/fabric-couchdb:${FABRIC_TAG}
+    image: ishangulhane/fabric-couchdb
     environment:
       - COUCHDB_USER=${DB_ADMIN}
       - COUCHDB_PASSWORD=${DB_PASSWORD}
@@ -37,7 +41,8 @@ services:
 
   shop-statedb:
     container_name: shop-statedb
-    image: hyperledger/fabric-couchdb:0.4.14
+    #image: hyperledger/fabric-couchdb:${FABRIC_TAG}
+    image: ishangulhane/fabric-couchdb
     environment:
       - COUCHDB_USER=${DB_ADMIN}
       - COUCHDB_PASSWORD=${DB_PASSWORD}
@@ -145,7 +150,7 @@ services:
 
   shop-ca:
     container_name: shop-ca
-    image: hyperledger/fabric-ca:amd64-1.3.0
+    image: hyperledger/fabric-ca:${CA_TAG}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
     command: fabric-ca-server start
@@ -163,7 +168,7 @@ services:
 
   cryptocurrency-ca:
     container_name: cryptocurrency-ca
-    image: hyperledger/fabric-ca:amd64-1.3.0
+    image: hyperledger/fabric-ca:${CA_TAG}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
     command: fabric-ca-server start
@@ -181,7 +186,7 @@ services:
 
   orderer0:
     container_name: orderer0
-    image: hyperledger/fabric-orderer:amd64-1.3.0
+    image: hyperledger/fabric-orderer:${CA_TAG}
     environment:
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -209,7 +214,7 @@ services:
 
   shop-peer:
     container_name: shop-peer
-    image: hyperledger/fabric-peer:amd64-1.3.0
+    image: hyperledger/fabric-peer:${CA_TAG}
     environment:
       - CORE_PEER_ID=shop-peer
       - CORE_PEER_ADDRESS=shop-peer:7051
@@ -254,7 +259,7 @@ services:
 
   cryptocurrency-peer:
     container_name: cryptocurrency-peer
-    image: hyperledger/fabric-peer:amd64-1.3.0
+    image: hyperledger/fabric-peer:${CA_TAG}
     environment:
       - CORE_PEER_ID=cryptocurrency-peer
       - CORE_PEER_ADDRESS=cryptocurrency-peer:7051
@@ -303,7 +308,7 @@ services:
     image: blockchain-setup
     environment:
       - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
-      - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:amd64-1.3.0
+      - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:${CA_TAG}
       - SECRETSDIR=/run/secrets
     volumes:
       - /var/run/:/host/var/run/
@@ -332,7 +337,7 @@ services:
     environment:
       - ORGID=org.ShopOrg
       - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
-      - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:amd64-1.3.0
+      - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:${CA_TAG}
       - SECRETSDIR=/run/secrets
       - RABBITMQQUEUE=seller_queue
       - SOCKETPORT=3030
@@ -364,7 +369,7 @@ services:
     environment:
       - ORGID=org.CryptocurrencyOrg
       - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
-      - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:amd64-1.3.0
+      - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:${CA_TAG}
       - SECRETSDIR=/run/secrets
       - RABBITMQQUEUE=user_queue
       - MESSAGEEXPIRY=400

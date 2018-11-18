@@ -7,7 +7,6 @@ This document goes through all the functions in the chaincode. All chaincode fun
 * fcn - function name
 * args - array of string
 
-
 ### Create user and seller
 
 #### Enroll member call
@@ -51,13 +50,13 @@ var input = {
 
 The invoke calls from user's iOS app which update the blockchain state.
 
-#### Generate ${COIN_NAME}s
+#### Generate Coins
 ```
 input = {
   type: invoke,
   params: {
     userId: userId
-    fcn: generateFitcoins
+    fcn: generateCryptocoins
     args: userId, totalSteps
   }
 }
@@ -71,13 +70,13 @@ input = {
   type: invoke,
   params: {
     userId: userId
-    fcn: awardFitcoins
-    args: userId, newFitcoins
+    fcn: awardCryptocoins
+    args: userId, newCryptocoins
   }
 }
 ```
 - userID - the user ID
-- newFitcoins - the number of ${COIN_NAME}s to add to user's account
+- newCryptocoins - the number of ${COIN_NAME}s to add to user's account
 
 #### Make purchase
 ```

@@ -1,4 +1,5 @@
 'use strict';
+
 var Long = require('long');
 var resolve = require('path').resolve;
 var EventEmitter = require('events').EventEmitter;
@@ -67,7 +68,7 @@ export class OrganizationClient extends EventEmitter {
         mspId: this._caConfig.mspId,
         adminUser: null,
         affiliationOrg: this._peerConfig.org,
-        noOfAttempts: 5
+        noOfAttempts: 1 
       });
       await this._client.setUserContext(this._adminUser);
       await this.createOrgAdmin();
@@ -238,7 +239,8 @@ export class OrganizationClient extends EventEmitter {
       proposal = results[1];
       let allGood = proposalResponses.every(pr => pr.response && pr.response.status == 200);
       if(!allGood) {
-        throw new Error(`Proposal rejected by some (all) of the peers: ${proposalResponses}`);
+        //throw new Error(`Proposal rejected by some (all) of the peers: ${proposalResponses}`);
+        console.error(`Proposal rejected by some (all) of the peers: ${proposalResponses}`);
       }
     } catch(e) {
       throw e;

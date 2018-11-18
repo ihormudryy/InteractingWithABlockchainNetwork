@@ -98,8 +98,8 @@ func (t *SimpleChaincode) makePurchase(stub shim.ChaincodeStubInterface, args []
 		return shim.Error("Not user type")
 	}
 
-	//check if user has enough Fitcoinsbalance
-	if user.FitcoinsBalance < contract.Cost {
+	//check if user has enough CryptocoinsBalance
+	if user.CryptocoinsBalance < contract.Cost {
 		return shim.Error("Insufficient funds")
 	}
 
@@ -172,9 +172,9 @@ func (t *SimpleChaincode) transactPurchase(stub shim.ChaincodeStubInterface, arg
 			}
 			json.Unmarshal(contractUserAsBytes, &contractUser)
 
-			//update user's FitcoinsBalance
-			if (contractUser.FitcoinsBalance - contract.Cost) >= 0 {
-				contractUser.FitcoinsBalance = contractUser.FitcoinsBalance - contract.Cost
+			//update user's CryptocoinsBalance
+			if (contractUser.CryptocoinsBalance - contract.Cost) >= 0 {
+				contractUser.CryptocoinsBalance = contractUser.CryptocoinsBalance - contract.Cost
 			} else {
 				return shim.Error("Insufficient ${COIN_NAME}s")
 			}
@@ -192,8 +192,8 @@ func (t *SimpleChaincode) transactPurchase(stub shim.ChaincodeStubInterface, arg
 			}
 			//if product not found return error
 			if productFound == true {
-				//update seller's FitcoinsBalance
-				member.FitcoinsBalance = member.FitcoinsBalance + contract.Cost
+				//update seller's CryptocoinsBalance
+				member.CryptocoinsBalance = member.CryptocoinsBalance + contract.Cost
 				//update user state
 				updatedUserAsBytes, _ := json.Marshal(contractUser)
 				err = stub.PutState(contract.UserId, updatedUserAsBytes)

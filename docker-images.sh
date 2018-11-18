@@ -37,23 +37,6 @@ else
     done
 fi
 
-# 1.3.0
-if [ $DOWNLOAD ]; then
-    : ${CA_TAG:="amd64-1.3.0"}
-    : ${FABRIC_TAG:="amd64-1.3.0"}
-
-    echo "===> Pulling fabric Images"
-    dockerFabricPull ${FABRIC_TAG}
-
-    echo "===> Pulling fabric ca Image"
-    dockerCaPull ${CA_TAG}
-
-    docker pull hyperledger/fabric-couchdb:0.4.14
-    echo
-    echo "===> List out hyperledger docker images"
-    docker images | grep hyperledger*
-fi
-
 if [ $BUILD ];
     then
     echo '############################################################'
@@ -63,4 +46,21 @@ if [ $BUILD ];
     docker build -t rabbit-client:latest rabbitClient/
     docker build -t redis-server:latest redisCluster/
     docker build -t backend:latest backend/
+fi
+
+# 1.3.0
+if [ $DOWNLOAD ]; then
+#    : ${CA_TAG:="amd64-1.3.0"}
+#    : ${FABRIC_TAG:="amd64-1.3.0"}
+
+    echo "===> Pulling fabric Images"
+    dockerFabricPull ${FABRIC_TAG}
+
+    echo "===> Pulling fabric ca Image"
+    dockerCaPull ${CA_TAG}
+
+    docker pull hyperledger/fabric-couchdb:amd64-0.4.14
+    echo
+    echo "===> List out hyperledger docker images"
+    docker images | grep hyperledger*
 fi

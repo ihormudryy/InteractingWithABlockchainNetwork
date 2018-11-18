@@ -49,7 +49,7 @@ func (t *SimpleChaincode) createMember(stub shim.ChaincodeStubInterface, args []
 		var user User
 		user.Id = member_id
 		user.Type = TYPE_USER
-		user.FitcoinsBalance = 0
+		user.CryptocoinsBalance = 0
 		user.StepsUsedForConversion = 0
 		user.TotalSteps = 0
 
@@ -70,7 +70,7 @@ func (t *SimpleChaincode) createMember(stub shim.ChaincodeStubInterface, args []
 		var seller Seller
 		seller.Id = member_id
 		seller.Type = TYPE_SELLER
-		seller.FitcoinsBalance = 0
+		seller.CryptocoinsBalance = 0
 
 		// store seller
 		sellerAsBytes, _ := json.Marshal(seller)
@@ -104,7 +104,7 @@ func (t *SimpleChaincode) createMember(stub shim.ChaincodeStubInterface, args []
 // Generate ${COIN_NAME}s for the user using user steps
 // Inputs - userId, transactionSteps
 // ============================================================================================================================
-func (t *SimpleChaincode) generateFitcoins(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+func (t *SimpleChaincode) generateCryptocoins(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	if len(args) != 2 {
 		return shim.Error("Incorrect number of arguments")
 	}
@@ -130,11 +130,11 @@ func (t *SimpleChaincode) generateFitcoins(stub shim.ChaincodeStubInterface, arg
 
 	//update user account
 	var newSteps = newTransactionSteps - user.StepsUsedForConversion
-	var newFitcoins = 0
+	var newCryptocoins = 0
 	if newSteps >= STEPS_TO_COIN_NAME {
-		newFitcoins = newSteps / STEPS_TO_COIN_NAME
+		newCryptocoins = newSteps / STEPS_TO_COIN_NAME
 		var remainderSteps = newSteps % STEPS_TO_COIN_NAME
-		user.FitcoinsBalance = user.FitcoinsBalance + newFitcoins
+		user.CryptocoinsBalance = user.CryptocoinsBalance + newCryptocoins
 		user.StepsUsedForConversion = newTransactionSteps - remainderSteps
 		user.TotalSteps = newTransactionSteps
 
@@ -146,20 +146,20 @@ func (t *SimpleChaincode) generateFitcoins(stub shim.ChaincodeStubInterface, arg
 		}
 	}
 
-	//return updated user with GeneratedFitcoins and GeneratedSteps
+	//return updated user with GeneratedCryptocoins and GeneratedSteps
 	type ReturnUser struct {
 		User
-		GeneratedFitcoins			 int      `json:"generatedFitcoins"`
+		GeneratedCryptocoins			 int      `json:"generatedCryptocoins"`
 	}
 	var returnUser ReturnUser
 
 	returnUser.Id = user.Id
 	returnUser.Type = user.Type
-	returnUser.FitcoinsBalance = user.FitcoinsBalance
+	returnUser.CryptocoinsBalance = user.CryptocoinsBalance
 	returnUser.TotalSteps = user.TotalSteps
 	returnUser.StepsUsedForConversion = user.StepsUsedForConversion
 	returnUser.ContractIds = user.ContractIds
-	returnUser.GeneratedFitcoins = newFitcoins
+	returnUser.GeneratedCryptocoins = newCryptocoins
 
 	returnUserBytes, _ := json.Marshal(returnUser)
 	return shim.Success(returnUserBytes)
@@ -169,9 +169,9 @@ func (t *SimpleChaincode) generateFitcoins(stub shim.ChaincodeStubInterface, arg
 
 // ============================================================================================================================
 // Award ${COIN_NAME}s to user
-// Inputs - userId, newFitcoins
+// Inputs - userId, newCryptocoins
 // ============================================================================================================================
-func (t *SimpleChaincode) awardFitcoins(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+func (t *SimpleChaincode) awardCryptocoins(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	if len(args) != 2 {
 		return shim.Error("Incorrect number of arguments")
 	}
@@ -179,13 +179,13 @@ func (t *SimpleChaincode) awardFitcoins(stub shim.ChaincodeStubInterface, args [
 
 	//get user_id and ${COIN_NAME}s from args
 	user_id := args[0]
-	newFitcoins, err := strconv.Atoi(args[1])
+	newCryptocoins, err := strconv.Atoi(args[1])
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 
-	//check newFitcoins arg
-	if (newFitcoins < 0) {
+	//check newCryptocoins arg
+	if (newCryptocoins < 0) {
 		return shim.Error("Must be positive")
 	}
 
@@ -200,7 +200,7 @@ func (t *SimpleChaincode) awardFitcoins(stub shim.ChaincodeStubInterface, args [
 		return shim.Error("Not user type")
 	}
 
-	user.FitcoinsBalance = user.FitcoinsBalance + newFitcoins
+	user.CryptocoinsBalance = user.CryptocoinsBalance + newCryptocoins
 
 	//update users state
 	updatedUserAsBytes, _ := json.Marshal(user)
@@ -209,20 +209,20 @@ func (t *SimpleChaincode) awardFitcoins(stub shim.ChaincodeStubInterface, args [
 		return shim.Error(err.Error())
 	}
 
-	//return updated user with GeneratedFitcoins
+	//return updated user with GeneratedCryptocoins
 	type ReturnUser struct {
 		User
-		GeneratedFitcoins			 int      `json:"generatedFitcoins"`
+		GeneratedCryptocoins			 int      `json:"generatedCryptocoins"`
 	}
 	var returnUser ReturnUser
 
 	returnUser.Id = user.Id
 	returnUser.Type = user.Type
-	returnUser.FitcoinsBalance = user.FitcoinsBalance
+	returnUser.CryptocoinsBalance = user.CryptocoinsBalance
 	returnUser.TotalSteps = user.TotalSteps
 	returnUser.StepsUsedForConversion = user.StepsUsedForConversion
 	returnUser.ContractIds = user.ContractIds
-	returnUser.GeneratedFitcoins = newFitcoins
+	returnUser.GeneratedCryptocoins = newCryptocoins
 
 	returnUserBytes, _ := json.Marshal(returnUser)
 	return shim.Success(returnUserBytes)
