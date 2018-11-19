@@ -13,8 +13,6 @@ services:
     ports:
       - 5984:5984
     restart: unless-stopped
-    volumes:
-      - /etc/localtime:/etc/localtime
     logging:
       driver: "json-file"
       options:
@@ -31,8 +29,6 @@ services:
     ports:
       - 8984:5984
     restart: unless-stopped
-    volumes:
-      - /etc/localtime:/etc/localtime
     logging:
       driver: "json-file"
       options:
@@ -49,8 +45,6 @@ services:
     ports:
       - 9984:5984
     restart: unless-stopped
-    volumes:
-      - /etc/localtime:/etc/localtime
     logging:
       driver: "json-file"
       options:
@@ -63,7 +57,6 @@ services:
     image: haproxy:1.8.14
     volumes:
       - ./rabbitServerClusterHAProxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-      - /etc/localtime:/etc/localtime
     depends_on:
       - rabbitmq1
       - rabbitmq2
@@ -88,8 +81,6 @@ services:
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
       - RABBITMQ_DEFAULT_VHOST=/
     restart: unless-stopped
-    volumes:
-      - /etc/localtime:/etc/localtime
     logging:
       driver: "json-file"
       options:
@@ -106,7 +97,6 @@ services:
       - RABBITMQ_ERLANG_COOKIE=6ad0a617cb89413daa0a
     volumes:
       - ./rabbitCluster/cluster-entrypoint.sh:/usr/local/bin/cluster-entrypoint.sh
-      - /etc/localtime:/etc/localtime
     entrypoint: /usr/local/bin/cluster-entrypoint.sh
     restart: unless-stopped
     logging:
@@ -125,7 +115,6 @@ services:
       - RABBITMQ_ERLANG_COOKIE=6ad0a617cb89413daa0a
     volumes:
       - ./rabbitCluster/cluster-entrypoint.sh:/usr/local/bin/cluster-entrypoint.sh
-      - /etc/localtime:/etc/localtime
     entrypoint: /usr/local/bin/cluster-entrypoint.sh
     restart: unless-stopped
     logging:
@@ -140,8 +129,6 @@ services:
     ports:
       - '7000-7005:7000-7005'
     restart: unless-stopped
-    volumes:
-     - /etc/localtime:/etc/localtime
     logging:
       driver: "json-file"
       options:
@@ -158,7 +145,6 @@ services:
       - 7054:7054
     volumes:
       - ./crypto-config/shopCA:/etc/hyperledger/fabric-ca-server
-      - /etc/localtime:/etc/localtime
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -176,7 +162,6 @@ services:
       - 8054:7054
     volumes:
       - ./crypto-config/cryptocurrencyCA:/etc/hyperledger/fabric-ca-server
-      - /etc/localtime:/etc/localtime
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -204,7 +189,6 @@ services:
       - 7050:7050
     volumes:
       - ./crypto-config/orderer:/etc/hyperledger/configtx
-      - /etc/localtime:/etc/localtime
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -242,7 +226,6 @@ services:
     volumes:
       - /var/run/:/host/var/run/
       - ./crypto-config/shopPeer:/etc/hyperledger/configtx
-      - /etc/localtime:/etc/localtime
     ports:
       - 7051:7051
       - 7053:7053
@@ -287,7 +270,6 @@ services:
     volumes:
       - /var/run/:/host/var/run/
       - ./crypto-config/cryptocurrencyPeer:/etc/hyperledger/configtx
-      - /etc/localtime:/etc/localtime
     ports:
       - 8051:7051
       - 8053:7053
@@ -407,8 +389,6 @@ services:
       - config
       - channel
     restart: unless-stopped
-    volumes:
-      - /etc/localtime:/etc/localtime
     logging:
       driver: "json-file"
       options:
@@ -431,8 +411,6 @@ services:
       - config
       - channel
     restart: unless-stopped
-    volumes:
-      - /etc/localtime:/etc/localtime
     logging:
       driver: "json-file"
       options:
@@ -455,8 +433,6 @@ services:
       - config
       - channel
     restart: unless-stopped
-    volumes:
-      - /etc/localtime:/etc/localtime
     logging:
       driver: "json-file"
       options:
@@ -468,7 +444,6 @@ services:
     hostname: rabbitclient
     image: haproxy:1.7
     volumes:
-      - /etc/localtime:/etc/localtime
       - ./rabbitClientHAProxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     depends_on:
       - rabbitclient1
