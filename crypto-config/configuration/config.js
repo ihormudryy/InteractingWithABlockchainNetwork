@@ -23,13 +23,13 @@ const config = {
       hostname: 'shop-peer',
       url: 'grpcs://shop-peer:7051',
       eventHubUrl: 'grpcs://shop-peer:7053',
+      stateDBUrl: 'http://shop-statedb:9984',
       pem: readCryptoFile('shopOrg.pem'),
       userKeystoreDBName: 'seller_db',
-      userKeystoreDBUrl: 'http://ca-datastore:5984',
       stateDBName: 'member_db',
-      stateDBUrl: 'http://shop-statedb:5984',
       org: 'org.ShopOrg',
-      userType: 'seller'
+      userType: 'seller',
+      userKeystoreDBUrl: 'http://ca-datastore:5984'
     },
     ca: {
       hostname: 'shop-ca',
@@ -45,14 +45,14 @@ const config = {
     peer: {
       hostname: 'cryptocurrency-peer',
       url: 'grpcs://cryptocurrency-peer:8051',
+      eventHubUrl: 'grpcs://cryptocurrency-peer:8053',
+      stateDBUrl: 'http://cryptocurrency-statedb:8984',
       pem: readCryptoFile('cryptocurrencyOrg.pem'),
       userKeystoreDBName: 'user_db',
-      userKeystoreDBUrl: 'http://ca-datastore:5984',
       stateDBName: 'member_db',
-      stateDBUrl: 'http://cryptocurrency-statedb:5984',
-      eventHubUrl: 'grpcs://cryptocurrency-peer:7053',
       org: 'org.CryptocurrencyOrg',
-      userType: 'user'
+      userType: 'user',
+      userKeystoreDBUrl: 'http://ca-datastore:5984'
     },
     ca: {
       hostname: 'cryptocurrency-ca',
@@ -68,7 +68,7 @@ const config = {
 };
 if(process.env.LOCALCONFIG) {
   config.orderer.url = 'grpcs://localhost:7050';
-  config.peers[0].peer.url = 'grpcs://localhost:8051';
+  config.peers[0].peer.url = 'grpcs://localhost:7051';
   config.peers[0].peer.eventHubUrl = 'grpcs://localhost:7053';
   config.peers[0].ca.url = 'https://localhost:5984';
   config.peers[0].peer.userKeystoreDBUrl = 'http://localhost:5984';
