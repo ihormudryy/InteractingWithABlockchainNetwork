@@ -23,7 +23,7 @@ const config = {
       hostname: 'shop-peer',
       url: 'grpcs://shop-peer:7051',
       eventHubUrl: 'grpcs://shop-peer:7053',
-      stateDBUrl: 'http://shop-statedb:9984',
+      stateDBUrl: 'http://shop-statedb:7984',
       pem: readCryptoFile('shopOrg.pem'),
       userKeystoreDBName: 'seller_db',
       stateDBName: 'member_db',
@@ -70,9 +70,9 @@ if(process.env.LOCALCONFIG) {
   config.orderer.url = 'grpcs://localhost:7050';
   config.peers[0].peer.url = 'grpcs://localhost:7051';
   config.peers[0].peer.eventHubUrl = 'grpcs://localhost:7053';
-  config.peers[0].ca.url = 'https://localhost:5984';
+  config.peers[0].ca.url = 'https://localhost:7054';
   config.peers[0].peer.userKeystoreDBUrl = 'http://localhost:5984';
-  config.peers[0].peer.stateDBUrl = 'http://localhost:9984';
+  config.peers[0].peer.stateDBUrl = 'http://localhost:7984';
   config.peers[1].peer.url = 'grpcs://localhost:8051';
   config.peers[1].peer.eventHubUrl = 'grpcs://localhost:8053';
   config.peers[1].ca.url = 'https://localhost:8054';

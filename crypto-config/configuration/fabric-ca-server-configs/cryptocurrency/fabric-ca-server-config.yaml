@@ -126,7 +126,7 @@ csr:
     O: "HERE"
     OU: "Technologies"
   hosts:
-  - shop-ca
+  - cryptocurrency-ca
   - localhost
   ca:
     expiry: 131400h
