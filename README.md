@@ -9,15 +9,6 @@ Welcome to Part 2 of building a Blockchain Application.  Now that you have creat
 * Docker
 * Hyperledger Fabric SDK for node.js
 
-
-## Application Workflow Diagram
-<!--Remember to dump an image in this path-->
-<p align="center">
-<!-- <img src="https://i.imgur.com/lNZxVxo.png"  data-canonical-src="https://i.imgur.com/lNZxVxo.png" width="650" height="450" style="margin-left: auto; margin-right: auto;"> -->
-<img src="./images/Interacting_arch2.jpeg"/>
-</p>
-
-
 1. Run a build script that launches the network in 3 steps.
 2. Ensure that all old Docker images are removed so you build the network from a clean system.
 3. Generate the cryptographic material. The Crypto configuration file (crypto-config.yaml) defines the identity of who is who. It tells peers and orderers what organization and domain they belong to. It then initializes a blockchain network or channel and services with an Orderer Genesis Block, which serves as the first chain block. Membership services are installed on each channel peer.
@@ -94,27 +85,6 @@ Blockchain newtork setup complete.
 **Command**
 ```bash
 docker ps
-```
-**Output:**
-```bash
-80de48d4f372        dev-cryptocurrency-peer-bcfit-1-7df93f2b75a05e9e7896ce92dcb057539e271722e43eba5ff9c75aae902fdcce   "chaincode -peer.add…"   3 hours ago         Up 3 hours                                                                dev-cryptocurrency-peer-bcfit-1
-0bb401fe44b9        backend                                                                                     "node index.js"          3 hours ago         Up 3 hours                                                                cryptocurrency_cryptocurrency-backend_1
-f873f201e99c        backend                                                                                     "node index.js"          3 hours ago         Up 3 hours                                                                cryptocurrency_shop-backend_1
-c7fdf4341ee9        rabbit-client                                                                               "node index.js"          3 hours ago         Up 3 hours          0.0.0.0:3000->3000/tcp                                rabbit-client
-499cf8d837ea        redis-server                                                                                "/docker-entrypoint.…"   3 hours ago         Up 3 hours          6379/tcp, 0.0.0.0:7000-7007->7000-7007/tcp            cryptocurrency_redis-server_1
-febba02cc941        dev-shop-peer-bcfit-1-0e0d4e71de9ac7df4d0d20dfcf583e3e63227edda600fe338485053387e09c50      "chaincode -peer.add…"   3 hours ago         Up 3 hours                                                                dev-shop-peer-bcfit-1
-03141f47f646        haproxy:1.7                                                                                 "/docker-entrypoint.…"   3 hours ago         Up 3 hours          0.0.0.0:5672->5672/tcp, 0.0.0.0:15672->15672/tcp      rabbitmq
-5ada66d99be3        rabbitmq:3-management                                                                       "/usr/local/bin/clus…"   3 hours ago         Up 3 hours          4369/tcp, 5671-5672/tcp, 15671-15672/tcp, 25672/tcp   rabbitmq3
-f51d8f5d7fc7        rabbitmq:3-management                                                                       "/usr/local/bin/clus…"   3 hours ago         Up 3 hours          4369/tcp, 5671-5672/tcp, 15671-15672/tcp, 25672/tcp   rabbitmq2
-172cabad39b4        rabbitmq:3-management                                                                       "docker-entrypoint.s…"   3 hours ago         Up 3 hours          4369/tcp, 5671-5672/tcp, 15671-15672/tcp, 25672/tcp   rabbitmq1
-5ffcf480fbb6        blockchain-setup                                                                            "node index.js"          3 hours ago         Up 3 hours          3000/tcp                                              blockchain-setup
-f58e488b23da        cryptocurrency-peer                                                                                "peer node start"        3 hours ago         Up 3 hours          0.0.0.0:8051->7051/tcp, 0.0.0.0:8053->7053/tcp        cryptocurrency-peer
-8e4facc6fd4a        shop-peer                                                                                   "peer node start"        3 hours ago         Up 3 hours          0.0.0.0:7051->7051/tcp, 0.0.0.0:7053->7053/tcp        shop-peer
-4297f9e1f45c        hyperledger/fabric-couchdb:x86_64-1.0.2                                                     "tini -- /docker-ent…"   3 hours ago         Up 3 hours          4369/tcp, 9100/tcp, 0.0.0.0:6984->5984/tcp            couchdb1
-e0fdc5312585        orderer-peer                                                                                "orderer"                3 hours ago         Up 3 hours          0.0.0.0:7050->7050/tcp                                orderer0
-56c209a37bed        shop-ca                                                                                     "fabric-ca-server st…"   3 hours ago         Up 3 hours          0.0.0.0:7054->7054/tcp                                shop-ca
-1db6a6ca3a6f        cryptocurrency-ca                                                                                  "fabric-ca-server st…"   3 hours ago         Up 3 hours          0.0.0.0:8054->7054/tcp                                cryptocurrency-ca
-c90b289a10e6        hyperledger/fabric-couchdb:x86_64-1.0.2                                                     "tini -- /docker-ent…"   3 hours ago         Up 3 hours          4369/tcp, 9100/tcp, 0.0.0.0:5984->5984/tcp            couchdb0
 ```
 
 **Command**
