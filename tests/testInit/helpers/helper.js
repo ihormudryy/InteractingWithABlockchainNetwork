@@ -24,7 +24,26 @@ var util = require('util');
 var hfc = require('fabric-client');
 hfc.setLogger(logger);
 
-async function getClientForOrg (userorg, username) {
+async function setupPeers(channel, org, client) {
+    for (const key in ORGS[org].peers) {
+        if (key) {
+            const data = fs.readFileSync(
+                path.join(__dirname, ORGS[org].peers[key]['tls_cacerts']));
+            const peer = client.newPeer(
+                ORGS[org].peers[key].requests,
+                {
+                    'pem': Buffer.from(data).toString(),
+                    'ssl-target-name-override': ORGS[org].peers[key]['hostname']
+                }
+            );
+            peer.setName(key);
+
+            channel.addPeer(peer);
+        }
+    }
+}
+
+async function getClientForOrg (client, userorg, username) {
 	logger.debug('getClientForOrg - ****** START %s %s', userorg, username)
 	// get a fabric client loaded with a connection profile for this org
 	let config = '-connection-profile-path';

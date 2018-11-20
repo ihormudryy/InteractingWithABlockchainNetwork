@@ -38,6 +38,7 @@ const config = {
       caName: 'shop-org'
     },
     admin: {
+      name: 'admin',
       key: readCryptoFile('Admin@shop-org-key.pem'),
       cert: readCryptoFile('Admin@shop-org-cert.pem')
     }
@@ -61,6 +62,7 @@ const config = {
       caName: 'cryptocurrency-org'
     },
     admin: {
+      name: 'admin',
       key: readCryptoFile('Admin@cryptocurrency-org-key.pem'),
       cert: readCryptoFile('Admin@cryptocurrency-org-cert.pem')
     }

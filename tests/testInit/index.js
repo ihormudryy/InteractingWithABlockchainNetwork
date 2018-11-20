@@ -23,21 +23,22 @@ var helper = require('./helpers/helper.js');
 var channel = require('./helpers/channel.js');
 var chaincode = require('./helpers/chaincode.js');
 var updateAnchorPeers = require('./helpers/update-anchor-peers.js');
-var invoke = require('./helpers/invoke-transaction.js');
 var query = require('./helpers/query.js');
 
-/*
-function readConfig() {
-  if(fs.existsSync(SECRETS_DIR)) {
-    const data = JSON.parse(fs.readFileSync(path.resolve(SECRETS_DIR, 'config')).toString());
-    data.channelConfig = fs.readFileSync(path.resolve(SECRETS_DIR, 'channel'));
-    return data;
-  }
-}
-
-const config = readConfig();
-//export default config;
-*/
-
+logger.setLevel('DEBUG');
 hfc.addConfigFile(path.join(SECRETS_DIR, 'config.json'));
-//channel.createChannel();
+
+var peers = hfc.getConfigSetting('peers');
+var channelObj = null;
+var channelName = hfc.getConfigSetting('channelName');
+var channelConfig = hfc.getConfigSetting('channelConfig');
+
+for (const key in peers){
+  var userName =  peers[key]["admin"]["name"];
+  var orgName = peers[key]["peer"]["org"];
+  var peerName = peers[key]["peer"]["hostname"];
+  if (channelObj === null) {
+    channelObj = channel.createChannel(channelName, channelConfig, userName, orgName);
+  } 
+  //channel.joinChannel(channelName, peerName, userName, orgName);
+}

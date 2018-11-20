@@ -2,7 +2,7 @@
   "name": "blockchain",
   "version": "1.0.0",
   "description": "Setup Blockchain for private network",
-  "main": "setup.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
