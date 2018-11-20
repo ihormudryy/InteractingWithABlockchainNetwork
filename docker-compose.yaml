@@ -182,8 +182,8 @@ services:
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/configtx/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/configtx/tls/server.crt
-      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/configtx/tls/ca.crt]
-    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderer
+      - ORDERER_GENERAL_TLS_ROOTCAS=/etc/hyperledger/configtx/tls/ca.crt
+    working_dir: /etc/hyperledger/fabric/orderer
     command: orderer
     ports:
       - 7050:7050
@@ -220,7 +220,7 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/configtx/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/configtx/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/configtx/tls/ca.crt
-    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    working_dir: /etc/hyperledger/fabric
     command: peer node start
     restart: unless-stopped
     volumes:
@@ -264,7 +264,7 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/configtx/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/configtx/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/configtx/tls/ca.crt
-    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    working_dir: /etc/hyperledger/fabric
     command: peer node start
     restart: unless-stopped
     volumes:

@@ -2,6 +2,9 @@
 set -e
 
 CHANNEL_NAME="mychannel"
+ORG_1="ShopOrg"
+ORG_2="CryptocurrencyOrg"
+
 PROJPATH=$(pwd)
 CRYPTO_CONF="$PROJPATH/crypto-config"
 CLIPATH=$CRYPTO_CONF/cli/peers
@@ -37,15 +40,15 @@ cp $CLIPATH/channel.tx $CRYPTO_CONF/configuration/channel.tx
 
 echo
 echo "#################################################################"
-echo "#######    Generating anchor peer update for ShopOrg   ##########"
+echo "#######    Generating anchor peer update for ${ORG_1}   ##########"
 echo "#################################################################"
-$PROJPATH/generators/$PLATFORM/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate $CLIPATH/ShopOrgMSPAnchors.tx -channelID $CHANNEL_NAME -asOrg ShopOrgMSP
+$PROJPATH/generators/$PLATFORM/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate $CLIPATH/${ORG_1}MSPAnchors.tx -channelID $CHANNEL_NAME -asOrg ${ORG_1}MSP
 
 echo
 echo "##################################################################"
-echo "####### Generating anchor peer update for RepairShopOrg ##########"
+echo "##### Generating anchor peer update for ${ORG_2} ########"
 echo "##################################################################"
-$PROJPATH/generators/$PLATFORM/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate $CLIPATH/CryptocurrencyOrgMSPAnchors.tx -channelID $CHANNEL_NAME -asOrg CryptocurrencyOrgMSP
+$PROJPATH/generators/$PLATFORM/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate $CLIPATH/${ORG_2}MSPAnchors.tx -channelID $CHANNEL_NAME -asOrg ${ORG_2}MSP
 
 rm -rf $CRYPTO_CONF/{orderer,shopPeer,cryptocurrencyPeer}
 mkdir $CRYPTO_CONF/{orderer,shopPeer,cryptocurrencyPeer}
@@ -82,8 +85,8 @@ WEBCERTS=$CRYPTO_CONF/configuration/certs
 rm -rf $WEBCERTS
 mkdir -p $WEBCERTS
 cp $CRYPTO_CONF/orderer/tls/ca.crt $WEBCERTS/ordererOrg.pem
-cp $CRYPTO_CONF/shopPeer/tls/ca.crt $WEBCERTS/shopOrg.pem
-cp $CRYPTO_CONF/cryptocurrencyPeer/tls/ca.crt $WEBCERTS/cryptocurrencyOrg.pem
+cp $CRYPTO_CONF/shopPeer/tls/ca.crt $WEBCERTS/${ORG_1}.pem
+cp $CRYPTO_CONF/cryptocurrencyPeer/tls/ca.crt $WEBCERTS/${ORG_2}.pem
 cp $PEERS/shop-org/users/Admin@shop-org/msp/keystore/* $WEBCERTS/Admin@shop-org-key.pem
 cp $PEERS/shop-org/users/Admin@shop-org/msp/signcerts/* $WEBCERTS/
 cp $PEERS/cryptocurrency-org/users/Admin@cryptocurrency-org/msp/keystore/* $WEBCERTS/Admin@cryptocurrency-org-key.pem
