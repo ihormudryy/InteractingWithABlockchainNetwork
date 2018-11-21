@@ -1,5 +1,11 @@
 version: "3.1"
 
+secrets:
+  config:
+    file: ./crypto-config/configuration/config.json
+  channel:
+    file: ./crypto-config/configuration/channel.tx
+
 services:
   ca-datastore:
     container_name: ca-datastore
@@ -19,24 +25,8 @@ services:
         max-size: "1m"
         max-file: "10"
 
-  cryptocurrency-statedb:
-    container_name: cryptocurrency-statedb
-    #image: hyperledger/fabric-couchdb:${FABRIC_TAG}
-    image: ishangulhane/fabric-couchdb
-    environment:
-      - COUCHDB_USER=${DB_ADMIN}
-      - COUCHDB_PASSWORD=${DB_PASSWORD}
-    ports:
-      - 8984:5984
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "10"
-
-  shop-statedb:
-    container_name: shop-statedb
+  ${org1}-statedb:
+    container_name: ${org1}-statedb
     #image: hyperledger/fabric-couchdb:${FABRIC_TAG}
     image: ishangulhane/fabric-couchdb
     environment:
@@ -51,71 +41,15 @@ services:
         max-size: "1m"
         max-file: "10"
 
-  rabbitmq:
-    container_name: rabbitmq
-    hostname: rabbitmq
-    image: haproxy:1.8.14
-    volumes:
-      - ./rabbitServerClusterHAProxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-    depends_on:
-      - rabbitmq1
-      - rabbitmq2
-      - rabbitmq3
+  ${org2}-statedb:
+    container_name: ${org2}-statedb
+    #image: hyperledger/fabric-couchdb:${FABRIC_TAG}
+    image: ishangulhane/fabric-couchdb
+    environment:
+      - COUCHDB_USER=${DB_ADMIN}
+      - COUCHDB_PASSWORD=${DB_PASSWORD}
     ports:
-      - 15672:15672
-      - 5672:5672
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "10"
-
-  rabbitmq1:
-    container_name: rabbitmq1
-    image: rabbitmq:3-management
-    hostname: rabbitmq1
-    environment:
-      - RABBITMQ_ERLANG_COOKIE=6ad0a617cb89413daa0a
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
-      - RABBITMQ_DEFAULT_VHOST=/
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "10"
-
-  rabbitmq2:
-    container_name: rabbitmq2
-    image: rabbitmq:3-management
-    hostname: rabbitmq2
-    depends_on:
-      - rabbitmq1
-    environment:
-      - RABBITMQ_ERLANG_COOKIE=6ad0a617cb89413daa0a
-    volumes:
-      - ./rabbitCluster/cluster-entrypoint.sh:/usr/local/bin/cluster-entrypoint.sh
-    entrypoint: /usr/local/bin/cluster-entrypoint.sh
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "10"
-
-  rabbitmq3:
-    container_name: rabbitmq3
-    image: rabbitmq:3-management
-    hostname: rabbitmq3
-    depends_on:
-      - rabbitmq1
-    environment:
-      - RABBITMQ_ERLANG_COOKIE=6ad0a617cb89413daa0a
-    volumes:
-      - ./rabbitCluster/cluster-entrypoint.sh:/usr/local/bin/cluster-entrypoint.sh
-    entrypoint: /usr/local/bin/cluster-entrypoint.sh
+      - 8984:5984
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -135,25 +69,8 @@ services:
         max-size: "1m"
         max-file: "10"
 
-  shop-ca:
-    container_name: shop-ca
-    image: hyperledger/fabric-ca:${CA_TAG}
-    environment:
-      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-    command: fabric-ca-server start
-    ports:
-      - 7054:7054
-    volumes:
-      - ./crypto-config/shopCA:/etc/hyperledger/fabric-ca-server
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "10"
-
-  cryptocurrency-ca:
-    container_name: cryptocurrency-ca
+  ${org1}-ca:
+    container_name: ${org1}-ca
     image: hyperledger/fabric-ca:${CA_TAG}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
@@ -161,7 +78,7 @@ services:
     ports:
       - 8054:7054
     volumes:
-      - ./crypto-config/cryptocurrencyCA:/etc/hyperledger/fabric-ca-server
+      - ./templates/cli/${org1}/CA:/etc/hyperledger/fabric-ca-server
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -169,26 +86,43 @@ services:
         max-size: "1m"
         max-file: "10"
 
-  orderer0:
-    container_name: orderer0
+  ${org2}-ca:
+    container_name: ${org2}-ca
+    image: hyperledger/fabric-ca:${CA_TAG}
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+    command: fabric-ca-server start
+    ports:
+      - 7054:7054
+    volumes:
+      - ./templates/cli/${org2}/CA:/etc/hyperledger/fabric-ca-server
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "10"
+
+  ${orderer}:
+    container_name: ${orderer}
     image: hyperledger/fabric-orderer:${CA_TAG}
     environment:
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
-      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
-      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/configtx/msp
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/fabric/genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=${orderer}MSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/fabric/msp
       - ORDERER_GENERAL_TLS_ENABLED=true
-      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/configtx/tls/server.key
-      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/configtx/tls/server.crt
-      - ORDERER_GENERAL_TLS_ROOTCAS=/etc/hyperledger/configtx/tls/ca.crt
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/fabric/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/fabric/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=/etc/hyperledger/fabric/tls/ca.crt
     working_dir: /etc/hyperledger/fabric/orderer
     command: orderer
     ports:
       - 7050:7050
     volumes:
-      - ./crypto-config/orderer:/etc/hyperledger/configtx
+      - ./templates/cli/${orderer}:/etc/hyperledger/fabric
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -196,16 +130,16 @@ services:
         max-size: "1m"
         max-file: "10"
 
-  shop-peer:
-    container_name: shop-peer
+  peer0.${org1_domain}:
+    container_name: peer0.${org1_domain}
     image: hyperledger/fabric-peer:${CA_TAG}
     environment:
-      - CORE_PEER_ID=shop-peer
-      - CORE_PEER_ADDRESS=shop-peer:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=shop-peer:7051
-      - CORE_PEER_LOCALMSPID=ShopOrgMSP
+      - CORE_PEER_ID=peer0.${org1_domain}
+      - CORE_PEER_ADDRESS=peer0.${org1_domain}:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.${org1_domain}:7051
+      - CORE_PEER_LOCALMSPID=${org1}MSP
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=shop-statedb:7984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=peer0.${org1_domain}-statedb:5984
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=${DB_ADMIN}
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=${DB_PASSWORD}
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
@@ -216,40 +150,42 @@ services:
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false
       - CORE_PEER_PROFILE_ENABLED=true
-      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/configtx/msp
-      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/configtx/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/configtx/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/configtx/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
     working_dir: /etc/hyperledger/fabric
     command: peer node start
     restart: unless-stopped
     volumes:
       - /var/run/:/host/var/run/
-      - ./crypto-config/shopPeer:/etc/hyperledger/configtx
+      - ./templates/cli/${org1_domain}/peers/peer0.${org1_domain}/msp:/etc/hyperledger/fabric/msp
+      - ./templates/cli/${org1_domain}/peers/peer0.${org1_domain}/tls:/etc/hyperledger/fabric/tls    
     ports:
       - 7051:7051
       - 7053:7053
     depends_on:
-      - orderer0
-      - shop-ca
+      - ${orderer}
+      - ${org1}-ca
+      - ${org2}-peer
       - ca-datastore
-      - shop-statedb
+      - ${org1}-statedb
     logging:
       driver: "json-file"
       options:
         max-size: "1m"
         max-file: "10"
 
-  cryptocurrency-peer:
-    container_name: cryptocurrency-peer
+  peer1.${org1_domain}:
+    container_name: peer1.${org1_domain}
     image: hyperledger/fabric-peer:${CA_TAG}
     environment:
-      - CORE_PEER_ID=cryptocurrency-peer
-      - CORE_PEER_ADDRESS=cryptocurrency-peer:8051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=cryptocurrency-peer:8051
-      - CORE_PEER_LOCALMSPID=CryptocurrencyOrgMSP
+      - CORE_PEER_ID=peer1.${org1_domain}
+      - CORE_PEER_ADDRESS=peer1.${org1_domain}:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.${org1_domain}:7051
+      - CORE_PEER_LOCALMSPID=${org1}MSP
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=cryptocurrency-statedb:8984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=peer1.${org1_domain}-statedb:5984
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=${DB_ADMIN}
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=${DB_PASSWORD}
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
@@ -260,25 +196,109 @@ services:
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false
       - CORE_PEER_PROFILE_ENABLED=true
-      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/configtx/msp
-      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/configtx/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/configtx/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/configtx/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
     working_dir: /etc/hyperledger/fabric
     command: peer node start
     restart: unless-stopped
     volumes:
       - /var/run/:/host/var/run/
-      - ./crypto-config/cryptocurrencyPeer:/etc/hyperledger/configtx
+      - ./templates/cli/${org1_domain}/peers/peer1.${org1_domain}/msp:/etc/hyperledger/fabric/msp
+      - ./templates/cli/${org1_domain}/peers/peer1.${org1_domain}/tls:/etc/hyperledger/fabric/tls    
+    ports:
+      - 7052:7051
+      - 7054:7053
+    depends_on:
+      - ${orderer}
+      - ca-datastore
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "10"
+
+  peer0.${org2_domain}:
+    container_name: ${org2}.${org2_domain}
+    image: hyperledger/fabric-peer:${CA_TAG}
+    environment:
+      - CORE_PEER_ID=peer0.${org2_domain}
+      - CORE_PEER_ADDRESS=peer0.${org2_domain}:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.${org2_domain}:7051
+      - CORE_PEER_LOCALMSPID=${org2}MSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=${org2}-statedb:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=${DB_ADMIN}
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=${DB_PASSWORD}
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COIN_NAME}_default
+      - CORE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_ENDORSER_ENABLED=true
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    working_dir: /etc/hyperledger/fabric
+    command: peer node start
+    restart: unless-stopped
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./templates/cli/${org1_domain}/peers/peer0.${org2_domain}/msp:/etc/hyperledger/fabric/msp
+      - ./templates/cli/${org1_domain}/peers/peer0.${org2_domain}/tls:/etc/hyperledger/fabric/tls
     ports:
       - 8051:7051
       - 8053:7053
     depends_on:
-      - orderer0
-      - cryptocurrency-ca
-      - shop-peer
+      - ${orderer}
       - ca-datastore
-      - cryptocurrency-statedb
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "10"
+
+  peer1.${org2_domain}:
+    container_name: peer1.${org2_domain}
+    image: hyperledger/fabric-peer:${CA_TAG}
+    environment:
+      - CORE_PEER_ID=peer1.${org2_domain}
+      - CORE_PEER_ADDRESS=peer1.${org2_domain}:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.${org2_domain}:7051
+      - CORE_PEER_LOCALMSPID=${org1}MSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=peer1.${org2_domain}-statedb:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=${DB_ADMIN}
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=${DB_PASSWORD}
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COIN_NAME}_default
+      - CORE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_ENDORSER_ENABLED=true
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+    working_dir: /etc/hyperledger/fabric
+    command: peer node start
+    restart: unless-stopped
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./templates/cli/${org2_domain}/peers/peer1.${org2_domain}/msp:/etc/hyperledger/fabric/msp
+      - ./templates/cli/${org2_domain}/peers/peer1.${org2_domain}/tls:/etc/hyperledger/fabric/tls    
+    ports:
+      - 8052:7051
+      - 8054:7053
+    depends_on:
+      - ${orderer}
+      - ca-datastore
     logging:
       driver: "json-file"
       options:
@@ -296,14 +316,12 @@ services:
       - /var/run/:/host/var/run/
     #restart: unless-stopped
     depends_on:
-      - orderer0
-      - shop-ca
-      - shop-peer
-      - cryptocurrency-ca
-      - cryptocurrency-peer
+      - ${orderer}
       - ca-datastore
-      - shop-statedb
-      - cryptocurrency-statedb
+      - peer0.${org1_domain}
+      - peer0.${org2_domain}
+      - peer1.${org1_domain}
+      - peer1.${org2_domain}
     secrets:
       - config
       - channel
@@ -312,66 +330,6 @@ services:
        options:
          max-size: "1m"
          max-file: "10"
-
-  shop-backend :
-    container_name: shop-backend
-    image: backend
-    environment:
-      - ORGID=org.ShopOrg
-      - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
-      - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:${CA_TAG}
-      - SECRETSDIR=/run/secrets
-      - RABBITMQQUEUE=seller_queue
-      - SOCKETPORT=3030
-      - MESSAGEEXPIRY=400
-      - EVENTEMITTER=true
-      - SENDTOIOT=false
-      - SCALECLIENT=1
-    ports:
-      - 3030:3030
-    volumes:
-      - /var/run/:/host/var/run/
-    #restart: unless-stopped
-    depends_on:
-      - blockchain-setup
-      - rabbitmq
-      - redis-server
-    secrets:
-      - config
-      - channel
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "10"
-
-  cryptocurrency-backend :
-    container_name: cryptocurrency-backend
-    image: backend
-    environment:
-      - ORGID=org.CryptocurrencyOrg
-      - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
-      - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:${CA_TAG}
-      - SECRETSDIR=/run/secrets
-      - RABBITMQQUEUE=user_queue
-      - MESSAGEEXPIRY=400
-      - SENDTOIOT=false
-      - SCALECLIENT=3
-    volumes:
-      - /var/run/:/host/var/run/
-    #restart: unless-stopped
-    depends_on:
-      - blockchain-setup
-      - rabbitmq
-      - redis-server
-    secrets:
-      - config
-      - channel
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "10"
 
   rabbitclient1 :
     container_name: rabbitclient1
@@ -384,7 +342,6 @@ services:
       - 3001:3000
     depends_on:
       - redis-server
-      - rabbitmq
     secrets:
       - config
       - channel
@@ -406,7 +363,6 @@ services:
       - 3002:3000
     depends_on:
       - redis-server
-      - rabbitmq
     secrets:
       - config
       - channel
@@ -428,7 +384,6 @@ services:
       - 3003:3000
     depends_on:
       - redis-server
-      - rabbitmq
     secrets:
       - config
       - channel
@@ -457,9 +412,3 @@ services:
       options:
         max-size: "1m"
         max-file: "10"
-
-secrets:
-  config:
-    file: ./crypto-config/configuration/config.json
-  channel:
-    file: ./crypto-config/configuration/channel.tx

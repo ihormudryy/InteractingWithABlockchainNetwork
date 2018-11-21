@@ -66,7 +66,6 @@ do
 
     rm -rf $CLIPATH/${org}
     mkdir -p $CLIPATH/${org}/CA/{ca,tls}
-    mkdir -p $CLIPATH/${org}/peer/{msp,tls}
 
     ORG_DOMAIN="${ORG_NAME_LOWERCASE}.${ORDERER_DOMAIN}"
     ORG_CA_PATH="$CLIPATH/${org}/CA"
@@ -76,23 +75,6 @@ do
     cp $PEERS/${ORG_DOMAIN}/ca/*-cert.pem $ORG_CA_PATH/ca/cert.pem
     cp $PEERS/${ORG_DOMAIN}/tlsca/*_sk $ORG_CA_PATH/tls/key.pem
     cp $PEERS/${ORG_DOMAIN}/tlsca/*-cert.pem $ORG_CA_PATH/tls/cert.pem
-    cp -r $PEERS/${ORG_DOMAIN}/msp/* $ORG_PEER_PATH/msp
-    cp $PEERS/${ORG_DOMAIN}/tlsca/*_sk $ORG_PEER_PATH/tls/key.pem
-    cp $PEERS/${ORG_DOMAIN}/tlsca/*-cert.pem $ORG_PEER_PATH/tls/cert.pem
 
     cp -r $FABRIC_CFG_PATH/fabric-ca-server-configs/$ORG_NAME_LOWERCASE/*.yaml $CLIPATH/${org}/CA
 done
-
-
-cp $CRYPTO_CONF/orderer/tls/ca.crt $WEBCERTS/ordererOrg.pem
-cp $CRYPTO_CONF/shopPeer/tls/ca.crt $WEBCERTS/${ORG_1}.pem
-cp $CRYPTO_CONF/cryptocurrencyPeer/tls/ca.crt $WEBCERTS/${ORG_2}.pem
-cp $PEERS/shop-org/users/Admin@shop-org/msp/keystore/* $WEBCERTS/Admin@shop-org-key.pem
-cp $PEERS/shop-org/users/Admin@shop-org/msp/signcerts/* $WEBCERTS/
-cp $PEERS/cryptocurrency-org/users/Admin@cryptocurrency-org/msp/keystore/* $WEBCERTS/Admin@cryptocurrency-org-key.pem
-cp $PEERS/cryptocurrency-org/users/Admin@cryptocurrency-org/msp/signcerts/* $WEBCERTS/
-
-cd $PROJPATH/configuration
-npm install
-node config.js
-cd $PROJPATH && rm -rf $WEBCERTS

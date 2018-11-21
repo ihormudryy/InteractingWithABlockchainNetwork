@@ -23,10 +23,10 @@ tls:
 #  certificates (TCerts).
 #############################################################################
 ca:
-  name: cryptocurrency-org
-  keyfile: /etc/hyperledger/fabric-ca-server/ca/ca/key.pem
-  certfile: /etc/hyperledger/fabric-ca-server/ca/ca/cert.pem
-  chainfile: /etc/hyperledger/fabric-ca-server/ca/ca/cert.pem
+  name: Provider
+  keyfile: /etc/hyperledger/fabric-ca-server/ca/key.pem
+  certfile: /etc/hyperledger/fabric-ca-server/ca/cert.pem
+  chainfile: /etc/hyperledger/fabric-ca-server/ca/cert.pem
 
 #############################################################################
 #  The registry section controls how the fabric-ca-server does two things:
@@ -48,7 +48,7 @@ registry:
      - name: admin
        pass: adminpw
        type: client
-       affiliation: "CryptocurrencyOrg"
+       affiliation: "Provider"
        maxenrollments: -1
        attrs:
           hf.Registrar.Roles: "client,user,peer,validator,auditor"
@@ -94,7 +94,7 @@ ldap:
 #############################################################################
 affiliations:
    org:
-      - CryptocurrencyOrg
+      - Provider
 
 #############################################################################
 #  Signing section
@@ -126,7 +126,7 @@ csr:
     O: "HERE"
     OU: "Technologies"
   hosts:
-  - cryptocurrency-ca
+  - provider.example.com
   - localhost
   ca:
     expiry: 131400h

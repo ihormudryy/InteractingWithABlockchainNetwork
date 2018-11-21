@@ -1,13 +1,19 @@
 #!/bin/bash
 export FABRIC_CFG_PATH=$PWD
-export COIN_NAME="mudryycoin"
-export COIN_NAME_CAMELCASE="MudryyCoin"
+export COIN_NAME="herecoin"
+export COIN_NAME_CAMELCASE="HERECoin"
 export DB_ADMIN=""
 export DB_PASSWORD=""
 export RABBITMQ_USER="guest"
 export RABBITMQ_PASS="guest"
 export CA_TAG="amd64-1.3.0"
 export FABRIC_TAG="amd64-0.4.14"
+
+export orderer="HEREOrderer"
+export org1 = "Consumer"
+export org2 = "Provider"
+export org1_domain = "consumer.example.com"
+export org2_domain = "provider.example.com"
 
 clean(){
     docker rm -f $(docker ps -aq)
@@ -18,14 +24,7 @@ clean(){
         docker rmi -f $i
     done
 
-    #docker rmi -f $(docker images | grep none)
-    images=(dev-shop-peer dev-cryptocurrency-peer)
-    for i in "${images[@]}"
-    do
-        echo Removing image : $i
-        docker rmi -f $(docker images | grep $i )
-    done
-
+    docker rmi -f $(docker images | grep none)
     docker rmi $(docker images -f "dangling=true" -q)
 }
 
@@ -46,12 +45,12 @@ docker-compose -p "${COIN_NAME}" up -d
 sleep 1s
 docker-compose -p "${COIN_NAME}" up -d --scale ${COIN_NAME}-backend=2
 sleep 1s
-docker-compose -p "${COIN_NAME}" up -d --scale ${COIN_NAME}-backend=3
-sleep 1s
-docker-compose -p "${COIN_NAME}" up -d --scale ${COIN_NAME}-backend=4
-sleep 1s
-docker-compose -p "${COIN_NAME}" up -d --scale ${COIN_NAME}-backend=5
-sleep 1s
+#docker-compose -p "${COIN_NAME}" up -d --scale ${COIN_NAME}-backend=3
+#sleep 1s
+#docker-compose -p "${COIN_NAME}" up -d --scale ${COIN_NAME}-backend=4
+#sleep 1s
+#docker-compose -p "${COIN_NAME}" up -d --scale ${COIN_NAME}-backend=5
+#sleep 1s
 docker ps
 
 containers=$(docker ps -a --format "{{.Names}}")

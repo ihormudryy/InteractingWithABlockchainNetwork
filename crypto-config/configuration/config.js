@@ -9,7 +9,6 @@ const config = {
   chaincodeId: 'bcfit',
   chaincodeVersion: '1',
   chaincodePath: 'bcfit',
-  rabbitmq: 'amqp://rabbitmq:5672?heartbeat=60',
   redisHost: 'redis-server',
   redisPort: 7000,
   iotDashUrl: 'https://think-iot-processor.mybluemix.net/steps?message=',
@@ -80,7 +79,6 @@ if(process.env.LOCALCONFIG) {
   config.peers[1].ca.url = 'https://localhost:8054';
   config.peers[1].peer.userKeystoreDBUrl = 'http://localhost:5984';
   config.peers[1].peer.stateDBUrl = 'http://localhost:8984';
-  config.rabbitmq = 'amqp://localhost:5672?heartbeat=60';
   config.redisHost = 'localhost';
   config.iotDashUrl = 'https://think-iot-processor.mybluemix.net/steps?message=';
 }
