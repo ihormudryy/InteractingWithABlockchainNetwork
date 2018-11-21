@@ -1,16 +1,16 @@
 version: "3.1"
 
 secrets:
-  config:
-    file: ./crypto-config/configuration/config.json
   channel:
-    file: ./crypto-config/configuration/channel.tx
+    file: ./templates/cli/peers/channel.tx
+
+networks: 
+  basic:
 
 services:
   ca-datastore:
     container_name: ca-datastore
-    #image: hyperledger/fabric-couchdb:${FABRIC_TAG}
-    image: ishangulhane/fabric-couchdb
+    image: hyperledger/fabric-couchdb:${FABRIC_TAG}
     environment:
       # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
       # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
@@ -24,11 +24,12 @@ services:
       options:
         max-size: "1m"
         max-file: "10"
+    networks:
+      - basic
 
-  ${org1}-statedb:
-    container_name: ${org1}-statedb
-    #image: hyperledger/fabric-couchdb:${FABRIC_TAG}
-    image: ishangulhane/fabric-couchdb
+  ${org1_domain}-statedb:
+    container_name: ${org1_domain}-statedb
+    image: hyperledger/fabric-couchdb:${FABRIC_TAG}
     environment:
       - COUCHDB_USER=${DB_ADMIN}
       - COUCHDB_PASSWORD=${DB_PASSWORD}
@@ -40,11 +41,12 @@ services:
       options:
         max-size: "1m"
         max-file: "10"
+    networks:
+      - basic
 
-  ${org2}-statedb:
-    container_name: ${org2}-statedb
-    #image: hyperledger/fabric-couchdb:${FABRIC_TAG}
-    image: ishangulhane/fabric-couchdb
+  ${org2_domain}-statedb:
+    container_name: ${org2_domain}-statedb
+    image: hyperledger/fabric-couchdb:${FABRIC_TAG}
     environment:
       - COUCHDB_USER=${DB_ADMIN}
       - COUCHDB_PASSWORD=${DB_PASSWORD}
@@ -56,27 +58,17 @@ services:
       options:
         max-size: "1m"
         max-file: "10"
+    networks:
+      - basic
 
-  redis-server:
-    hostname: redis-server
-    image: redis-server
-    ports:
-      - '7000-7005:7000-7005'
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "10"
-
-  ${org1}-ca:
-    container_name: ${org1}-ca
+  ${org1_domain}-ca:
+    container_name: ${org1_domain}-ca
     image: hyperledger/fabric-ca:${CA_TAG}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
     command: fabric-ca-server start
     ports:
-      - 8054:7054
+      - 7054:7054
     volumes:
       - ./templates/cli/${org1}/CA:/etc/hyperledger/fabric-ca-server
     restart: unless-stopped
@@ -85,15 +77,17 @@ services:
       options:
         max-size: "1m"
         max-file: "10"
+    networks:
+      - basic
 
-  ${org2}-ca:
-    container_name: ${org2}-ca
+  ${org2_domain}-ca:
+    container_name: ${org2_domain}-ca
     image: hyperledger/fabric-ca:${CA_TAG}
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
     command: fabric-ca-server start
     ports:
-      - 7054:7054
+      - 8054:7054
     volumes:
       - ./templates/cli/${org2}/CA:/etc/hyperledger/fabric-ca-server
     restart: unless-stopped
@@ -102,9 +96,11 @@ services:
       options:
         max-size: "1m"
         max-file: "10"
+    networks:
+      - basic
 
-  ${orderer}:
-    container_name: ${orderer}
+  orderer.${orderer_domain}:
+    container_name: orderer.${orderer_domain}
     image: hyperledger/fabric-orderer:${CA_TAG}
     environment:
       - ORDERER_GENERAL_LOGLEVEL=debug
@@ -122,13 +118,17 @@ services:
     ports:
       - 7050:7050
     volumes:
-      - ./templates/cli/${orderer}:/etc/hyperledger/fabric
+      - ./templates/cli/peers/ordererOrganizations/${orderer_domain}/orderers/orderer.${orderer_domain}/tls:/etc/hyperledger/fabric/tls
+      - ./templates/cli/peers/ordererOrganizations/${orderer_domain}/orderers/orderer.${orderer_domain}/msp:/etc/hyperledger/fabric/msp
+      - ./templates/cli/${orderer}/genesis.block:/etc/hyperledger/fabric/genesis.block
     restart: unless-stopped
     logging:
       driver: "json-file"
       options:
         max-size: "1m"
         max-file: "10"
+    networks:
+      - basic
 
   peer0.${org1_domain}:
     container_name: peer0.${org1_domain}
@@ -159,22 +159,23 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/:/host/var/run/
-      - ./templates/cli/${org1_domain}/peers/peer0.${org1_domain}/msp:/etc/hyperledger/fabric/msp
-      - ./templates/cli/${org1_domain}/peers/peer0.${org1_domain}/tls:/etc/hyperledger/fabric/tls    
+      - ./templates/cli/peers/peerOrganizations/${org1_domain}/peers/peer0.${org1_domain}/msp:/etc/hyperledger/fabric/msp
+      - ./templates/cli/peers/peerOrganizations/${org1_domain}/peers/peer0.${org1_domain}/tls:/etc/hyperledger/fabric/tls    
     ports:
       - 7051:7051
       - 7053:7053
     depends_on:
-      - ${orderer}
-      - ${org1}-ca
-      - ${org2}-peer
+      - orderer.${orderer_domain}
       - ca-datastore
-      - ${org1}-statedb
+      - ${org1_domain}-statedb
+      - ${org1_domain}-ca
     logging:
       driver: "json-file"
       options:
         max-size: "1m"
         max-file: "10"
+    networks:
+      - basic
 
   peer1.${org1_domain}:
     container_name: peer1.${org1_domain}
@@ -205,22 +206,26 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/:/host/var/run/
-      - ./templates/cli/${org1_domain}/peers/peer1.${org1_domain}/msp:/etc/hyperledger/fabric/msp
-      - ./templates/cli/${org1_domain}/peers/peer1.${org1_domain}/tls:/etc/hyperledger/fabric/tls    
+      - ./templates/cli/peers/peerOrganizations/${org1_domain}/peers/peer1.${org1_domain}/msp:/etc/hyperledger/fabric/msp
+      - ./templates/cli/peers/peerOrganizations/${org1_domain}/peers/peer1.${org1_domain}/tls:/etc/hyperledger/fabric/tls    
     ports:
-      - 7052:7051
-      - 7054:7053
+      - 8051:7051
+      - 8053:7053
     depends_on:
-      - ${orderer}
+      - orderer.${orderer_domain}
       - ca-datastore
+      - ${org1_domain}-statedb
+      - ${org1_domain}-ca
     logging:
       driver: "json-file"
       options:
         max-size: "1m"
         max-file: "10"
+    networks:
+      - basic
 
   peer0.${org2_domain}:
-    container_name: ${org2}.${org2_domain}
+    container_name: peer0.${org2_domain}
     image: hyperledger/fabric-peer:${CA_TAG}
     environment:
       - CORE_PEER_ID=peer0.${org2_domain}
@@ -228,12 +233,12 @@ services:
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.${org2_domain}:7051
       - CORE_PEER_LOCALMSPID=${org2}MSP
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=${org2}-statedb:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=${org2_domain}-statedb:5984
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=${DB_ADMIN}
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=${DB_PASSWORD}
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COIN_NAME}_default
-      - CORE_LOGGING_LEVEL=DEBUG
+      - CORE_LOGGING_LEVEL=INFO
       - CORE_PEER_TLS_ENABLED=true
       - CORE_PEER_ENDORSER_ENABLED=true
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
@@ -248,19 +253,23 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/:/host/var/run/
-      - ./templates/cli/${org1_domain}/peers/peer0.${org2_domain}/msp:/etc/hyperledger/fabric/msp
-      - ./templates/cli/${org1_domain}/peers/peer0.${org2_domain}/tls:/etc/hyperledger/fabric/tls
+      - ./templates/cli/peers/peerOrganizations/${org2_domain}/peers/peer0.${org2_domain}/msp:/etc/hyperledger/fabric/msp
+      - ./templates/cli/peers/peerOrganizations/${org2_domain}/peers/peer0.${org2_domain}/tlsca:/etc/hyperledger/fabric/tls
     ports:
-      - 8051:7051
-      - 8053:7053
+      - 9051:7051
+      - 9053:7053
     depends_on:
-      - ${orderer}
+      - orderer.${orderer_domain}
       - ca-datastore
+      - ${org2_domain}-statedb
+      - ${org2_domain}-ca
     logging:
       driver: "json-file"
       options:
         max-size: "1m"
         max-file: "10"
+    networks:
+      - basic
 
   peer1.${org2_domain}:
     container_name: peer1.${org2_domain}
@@ -291,124 +300,20 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/:/host/var/run/
-      - ./templates/cli/${org2_domain}/peers/peer1.${org2_domain}/msp:/etc/hyperledger/fabric/msp
-      - ./templates/cli/${org2_domain}/peers/peer1.${org2_domain}/tls:/etc/hyperledger/fabric/tls    
+      - ./templates/cli/peers/peerOrganizations/${org2_domain}/peers/peer1.${org2_domain}/msp:/etc/hyperledger/fabric/msp
+      - ./templates/cli/peers/peerOrganizations/${org2_domain}/peers/peer1.${org2_domain}/tls:/etc/hyperledger/fabric/tls    
     ports:
-      - 8052:7051
-      - 8054:7053
+      - 10051:7051
+      - 10053:7053
     depends_on:
-      - ${orderer}
+      - orderer.${orderer_domain}
       - ca-datastore
+      - ${org2_domain}-statedb
+      - ${org2_domain}-ca
     logging:
       driver: "json-file"
       options:
         max-size: "1m"
         max-file: "10"
-
-  blockchain-setup:
-    container_name: blockchain-setup
-    image: blockchain-setup
-    environment:
-      - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
-      - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:${CA_TAG}
-      - SECRETSDIR=/run/secrets
-    volumes:
-      - /var/run/:/host/var/run/
-    #restart: unless-stopped
-    depends_on:
-      - ${orderer}
-      - ca-datastore
-      - peer0.${org1_domain}
-      - peer0.${org2_domain}
-      - peer1.${org1_domain}
-      - peer1.${org2_domain}
-    secrets:
-      - config
-      - channel
-    logging:
-       driver: "json-file"
-       options:
-         max-size: "1m"
-         max-file: "10"
-
-  rabbitclient1 :
-    container_name: rabbitclient1
-    image: rabbit-client
-    hostname: rabbitclient1
-    environment:
-      - SECRETSDIR=/run/secrets
-      - PORT=3000
-    ports:
-      - 3001:3000
-    depends_on:
-      - redis-server
-    secrets:
-      - config
-      - channel
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "10"
-
-  rabbitclient2 :
-    container_name: rabbitclient2
-    image: rabbit-client
-    hostname: rabbitclient2
-    environment:
-      - SECRETSDIR=/run/secrets
-      - PORT=3000
-    ports:
-      - 3002:3000
-    depends_on:
-      - redis-server
-    secrets:
-      - config
-      - channel
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "10"
-
-  rabbitclient3 :
-    container_name: rabbitclient3
-    image: rabbit-client
-    hostname: rabbitclient3
-    environment:
-      - SECRETSDIR=/run/secrets
-      - PORT=3000
-    ports:
-      - 3003:3000
-    depends_on:
-      - redis-server
-    secrets:
-      - config
-      - channel
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "10"
-
-  rabbitclient:
-    container_name: rabbitclient
-    hostname: rabbitclient
-    image: haproxy:1.7
-    volumes:
-      - ./rabbitClientHAProxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-    depends_on:
-      - rabbitclient1
-      - rabbitclient2
-      - rabbitclient3
-    ports:
-      - 3000:3000
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "10"
+    networks:
+      - basic

@@ -66,6 +66,7 @@ do
 
     rm -rf $CLIPATH/${org}
     mkdir -p $CLIPATH/${org}/CA/{ca,tls}
+    mkdir -p $CLIPATH/${org}/peer/{msp,tls}
 
     ORG_DOMAIN="${ORG_NAME_LOWERCASE}.${ORDERER_DOMAIN}"
     ORG_CA_PATH="$CLIPATH/${org}/CA"
@@ -75,6 +76,10 @@ do
     cp $PEERS/${ORG_DOMAIN}/ca/*-cert.pem $ORG_CA_PATH/ca/cert.pem
     cp $PEERS/${ORG_DOMAIN}/tlsca/*_sk $ORG_CA_PATH/tls/key.pem
     cp $PEERS/${ORG_DOMAIN}/tlsca/*-cert.pem $ORG_CA_PATH/tls/cert.pem
+
+    cp -r $PEERS/${ORG_DOMAIN}/msp/* $ORG_PEER_PATH/msp
+    cp $PEERS/${ORG_DOMAIN}/tlsca/*_sk $ORG_PEER_PATH/tls/key.pem
+    cp $PEERS/${ORG_DOMAIN}/tlsca/*-cert.pem $ORG_PEER_PATH/tls/cert.pem
 
     cp -r $FABRIC_CFG_PATH/fabric-ca-server-configs/$ORG_NAME_LOWERCASE/*.yaml $CLIPATH/${org}/CA
 done

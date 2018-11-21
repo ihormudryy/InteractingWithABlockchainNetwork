@@ -16,7 +16,7 @@ Organizations:
 
     # SampleOrg defines an MSP using the sampleconfig.  It should never be used
     # in production but may be used as a template for other definitions
-    - &HEREOrdererOrg
+    - &HEREOrderer
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
         Name: HEREOrdererMSP
@@ -26,6 +26,13 @@ Organizations:
 
         # MSPDir is the filesystem path which contains the MSP configuration
         MSPDir: cli/peers/ordererOrganizations/example.com/msp
+
+        AnchorPeers:
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
+            - Host: orderer.example.com
+              Port: 7051
 
     - &Provider
         # DefaultOrg defines the organization which is used in the sampleconfig
@@ -41,7 +48,7 @@ Organizations:
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
             - Host: peer0.provider.example.com
-              Port: 7051
+              Port: 8051
 
     - &Consumer
         # DefaultOrg defines the organization which is used in the sampleconfig
@@ -58,7 +65,7 @@ Organizations:
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
             - Host: peer0.consumer.example.com
-              Port: 7052
+              Port: 9052
 
 ################################################################################
 #
@@ -133,9 +140,9 @@ Profiles:
         Orderer:
             <<: *OrdererDefaults
             Organizations:
-                - *HEREOrdererOrg
+                - *HEREOrderer
         Consortiums:
-            SampleConsortium:
+            MarketplaceConsortium:
                 Organizations:
                     - *Provider
                     - *Consumer

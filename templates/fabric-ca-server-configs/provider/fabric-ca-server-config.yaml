@@ -9,8 +9,8 @@ debug: false
 #############################################################################
 tls:
   enabled: true
-  certfile: /etc/hyperledger/fabric-ca-server/ca/tls/cert.pem
-  keyfile: /etc/hyperledger/fabric-ca-server/ca/tls/key.pem
+  certfile: /etc/hyperledger/fabric-ca-server/tls/cert.pem
+  keyfile: /etc/hyperledger/fabric-ca-server/tls/key.pem
   clientauth:
     type: noclientcert
     certfiles:

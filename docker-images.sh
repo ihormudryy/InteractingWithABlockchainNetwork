@@ -42,11 +42,7 @@ if [ $BUILD ];
     echo '############################################################'
     echo '#                 BUILDING CONTAINER IMAGES                #'
     echo '############################################################'
-    cp -r blockchainNetwork/set-up backend/
-    docker build -t blockchain-setup:latest blockchainNetwork/
-    docker build -t redis-server:latest redisCluster/
-    docker build -t backend:latest backend/
-    rm -rf backend/set-up
+    #docker build -t blockchain-setup:latest blockchainNetwork/
 fi
 
 if [ $DOWNLOAD ]; then
