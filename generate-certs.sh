@@ -80,6 +80,7 @@ do
     cp -r $PEERS/${ORG_DOMAIN}/msp/* $ORG_PEER_PATH/msp
     cp $PEERS/${ORG_DOMAIN}/tlsca/*_sk $ORG_PEER_PATH/tls/key.pem
     cp $PEERS/${ORG_DOMAIN}/tlsca/*-cert.pem $ORG_PEER_PATH/tls/cert.pem
-
+    cp $PEERS/${ORG_DOMAIN}/users/Admin@${ORG_DOMAIN}/msp/keystore/*_sk $ORG_PEER_PATH/server_key.pem
+    
     cp -r $FABRIC_CFG_PATH/fabric-ca-server-configs/$ORG_NAME_LOWERCASE/*.yaml $CLIPATH/${org}/CA
 done
