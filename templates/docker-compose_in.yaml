@@ -254,7 +254,7 @@ services:
     volumes:
       - /var/run/:/host/var/run/
       - ./templates/cli/peers/peerOrganizations/${org2_domain}/peers/peer0.${org2_domain}/msp:/etc/hyperledger/fabric/msp
-      - ./templates/cli/peers/peerOrganizations/${org2_domain}/peers/peer0.${org2_domain}/tlsca:/etc/hyperledger/fabric/tls
+      - ./templates/cli/peers/peerOrganizations/${org2_domain}/peers/peer0.${org2_domain}/tls:/etc/hyperledger/fabric/tls
     ports:
       - 9051:7051
       - 9053:7053
