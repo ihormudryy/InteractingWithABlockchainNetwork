@@ -1,9 +1,13 @@
 #!/bin/bash
 #set -e
 
-CHANNEL_NAME="marketplace_channel"
-ORDERER="HEREOrderer"
+if [ -z "$CHANNEL_NAME" ]; then
+    export CHANNEL_NAME="marketplace"
+fi
 
+if [ -z "$ORDERER" ]; then
+    export ORDERER="HEREOrderer"
+fi
 organizations=("Consumer" "Provider")
 
 PROJPATH=$(pwd)
@@ -29,19 +33,27 @@ echo
 echo "#################################################################"
 echo "#######        Generating cryptographic material       ##########"
 echo "#################################################################"
-$PROJPATH/generators/$PLATFORM/cryptogen generate --config=$FABRIC_CFG_PATH/cryptogen.yaml --output=$CLIPATH/peers
+$PROJPATH/generators/$PLATFORM/cryptogen generate \
+    --config=$FABRIC_CFG_PATH/cryptogen.yaml \
+    --output=$CLIPATH/peers || exit
 
 echo
 echo "##########################################################"
 echo "#########  Generating Orderer Genesis block ##############"
 echo "##########################################################"
-$PROJPATH/generators/$PLATFORM/configtxgen -profile TwoOrgsOrdererGenesis -outputBlock $CLIPATH/peers/genesis.block
+$PROJPATH/generators/$PLATFORM/configtxgen \
+    -profile TwoOrgsOrdererGenesis \
+    -outputBlock $CLIPATH/peers/genesis.block \
+    -channelID=${channel_name}
 
 echo
 echo "#################################################################"
 echo "### Generating channel configuration transaction 'channel.tx' ###"
 echo "#################################################################"
-$PROJPATH/generators/$PLATFORM/configtxgen -profile TwoOrgsChannel -outputCreateChannelTx $CLIPATH/peers/channel.tx -channelID $CHANNEL_NAME
+$PROJPATH/generators/$PLATFORM/configtxgen \
+    -profile TwoOrgsChannel \
+    -outputCreateChannelTx $CLIPATH/peers/${channel_name}.tx \
+    -channelID $CHANNEL_NAME
 
 rm -rf $CLIPATH/$ORDERER && mkdir -p $CLIPATH/$ORDERER/{tls,msp}
 cp -r $ORDERERS/${ORDERER_DOMAIN}/msp/* $CLIPATH/$ORDERER/msp
@@ -60,9 +72,9 @@ do
 
     $PROJPATH/generators/$PLATFORM/configtxgen \
     -profile TwoOrgsChannel \
-    -outputAnchorPeersUpdate $CLIPATH/peers/${org}MSPAnchors.tx \
+    -outputAnchorPeersUpdate $CLIPATH/peers/${org}Anchors.tx \
     -channelID $CHANNEL_NAME \
-    -asOrg ${org}MSP
+    -asOrg ${org}
 
     rm -rf $CLIPATH/${org}
     mkdir -p $CLIPATH/${org}/CA/{ca,tls}

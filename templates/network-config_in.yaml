@@ -69,10 +69,10 @@ channels:
         eventSource: true
 
       peer1.${org1_domain}:
-        endorsingPeer: false
+        endorsingPeer: true
         chaincodeQuery: true
         ledgerQuery: true
-        eventSource: false
+        eventSource: true
 
       peer0.${org2_domain}:
         endorsingPeer: true
@@ -81,7 +81,7 @@ channels:
         eventSource: true
 
       peer1.${org2_domain}:
-        endorsingPeer: false
+        endorsingPeer: true
         chaincodeQuery: true
         ledgerQuery: true
         eventSource: false
@@ -98,7 +98,7 @@ channels:
 #
 organizations:
   ${org1}:
-    mspid: ${org1}MSP
+    mspid: ${org1}
 
     peers:
       - peer0.${org1_domain}
@@ -110,7 +110,7 @@ organizations:
     # dynamic certificate management (enroll, revoke, re-enroll). The following section is only for
     # Fabric-CA servers.
     certificateAuthorities:
-      - ${org1_domain}-ca
+      - ca.${org1_domain}
 
     # [Optional]. If the application is going to make requests that are reserved to organization
     # administrators, including creating/updating channels, installing/instantiating chaincodes, it
@@ -125,17 +125,17 @@ organizations:
       path: ./cli/peers/peerOrganizations/${org1_domain}/users/Admin@${org1_domain}/msp/signcerts/Admin@${org1_domain}-cert.pem
 
   # the profile will contain public information about organizations other than the one it belongs to.
-  # These are necessary information to make transaction lifecycles work, including MSP IDs and
+  # These are necessary information to make transaction lifecycles work, including  IDs and
   # peers with a public URL to send transaction proposals. The file will not contain private
   # information reserved for members of the organization, such as admin key and certificate,
   # fabric-ca registrar enroll ID and secret, etc.
   ${org2}:
-    mspid: ${org2}MSP
+    mspid: ${org2}
     peers:
       - peer0.${org2_domain}
       - peer1.${org2_domain}
     certificateAuthorities:
-      - ${org2_domain}-ca
+      - ca.${org2_domain}
     adminPrivateKey:
       path: ./cli/${org2}/peer/server_key.pem
     signedCert:
@@ -202,7 +202,7 @@ peers:
 # Certificate Authority instead of Fabric-CA, in which case this section would not be specified.
 #
 certificateAuthorities:
-  ${org1_domain}-ca:
+  ca.${org1_domain}:
     url: https://${domain}:7054
     # the properties specified under this object are passed to the 'http' client verbatim when
     # making the request to the Fabric-CA server
@@ -217,9 +217,9 @@ certificateAuthorities:
       - enrollId: ${ADMIN}
         enrollSecret: ${ADMIN_PWD}
     # [Optional] The optional name of the CA.
-    caName: ${org1_domain}-ca
+    caName: ca.${org1_domain}
 
-  ${org2_domain}-ca:
+  ca.${org2_domain}:
     url: https://${domain}:8054
     httpOptions:
       verify: false
@@ -229,4 +229,4 @@ certificateAuthorities:
       - enrollId: ${ADMIN}
         enrollSecret: ${ADMIN_PWD}
     # [Optional] The optional name of the CA.
-    caName: ${org1_domain}-ca
+    caName: ca.${org1_domain}

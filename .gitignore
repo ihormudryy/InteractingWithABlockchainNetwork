@@ -4,3 +4,4 @@ package-lock.json
 .idea
 cli
 docker-compose.yaml
+network-config.yaml
