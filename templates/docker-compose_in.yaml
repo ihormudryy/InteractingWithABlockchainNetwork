@@ -80,7 +80,7 @@ services:
     container_name: orderer.${orderer_domain}
     image: hyperledger/fabric-orderer:${CA_TAG}
     environment:
-      - ORDERER_GENERAL_LOGLEVEL=info
+      - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/fabric/genesis.block
@@ -89,7 +89,7 @@ services:
       - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/fabric/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/fabric/tls/server.crt
-      - ORDERER_GENERAL_TLS_ROOTCAS=/etc/hyperledger/fabric/tls/ca.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/fabric/tls/ca.crt]
     working_dir: /etc/hyperledger/fabric/orderer
     command: orderer
     ports:
@@ -301,13 +301,13 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_LOGGING_LEVEL=INFO
       - CORE_PEER_ID=cli
-      - CORE_PEER_ADDRESS=peer0.${org1_domain}:7051
-      - CORE_PEER_LOCALMSPID=${org1}
-      - CORE_PEER_TLS_ENABLED=true
-      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
-      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
-      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
-      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
+      #- CORE_PEER_ADDRESS=peer0.${org1_domain}:7051
+      #- CORE_PEER_LOCALMSPID=${org1}
+      #- CORE_PEER_TLS_ENABLED=true
+      #- CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/peer/msp
+      #- CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/peer/tls/server.crt
+      #- CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/peer/tls/server.key
+      #- CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/peer/tls/ca.crt
       - ORDERER_CA=/etc/hyperledger/fabric/orderer/msp/tlscacerts/tlsca.${orderer_domain}-cert.pem
       - ORDERER_DOMAIN=${orderer_domain}
       - CHANNEL_NAME=${channel_name}
@@ -317,7 +317,7 @@ services:
       - ORG2=${org2_domain}
       - ORG2_ID=${org2}
       - CA_DIR=/etc/hyperledger/fabric/all/templates/cli
-    working_dir: /etc/hyperledger/fabric/all
+    working_dir: /etc/hyperledger/fabric/all/scripts
     command: /bin/bash
     volumes:
       - /var/run/:/host/var/run/

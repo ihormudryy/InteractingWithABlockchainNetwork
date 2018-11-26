@@ -23,6 +23,8 @@ OrdererOrgs:
       Count: 2
       SANS:
         - "localhost"
+    Users:
+      Count: 10
 
 # ---------------------------------------------------------------------------
 # "PeerOrgs" - Definition of organizations managing peer nodes
@@ -33,7 +35,6 @@ PeerOrgs:
   # ---------------------------------------------------------------------------
   - Name: Consumer
     Domain: consumer.example.com
-
     # ---------------------------------------------------------------------------
     # "CA"
     # ---------------------------------------------------------------------------
@@ -41,7 +42,11 @@ PeerOrgs:
     # organization.  This entry is a Spec.  See "Specs" section below for details.
     # ---------------------------------------------------------------------------
     CA:
-       Hostname: ca # implicitly ca.org1.example.com
+      Hostname: ca.consumer.example.com
+      Country: EU
+      Province: Berlin
+      Locality: Germany
+      OrganizationalUnit: HOME
 
     # ---------------------------------------------------------------------------
     # "Specs"
@@ -108,7 +113,11 @@ PeerOrgs:
   - Name: Provider
     Domain: provider.example.com
     CA:
-       Hostname: ca # implicitly ca.org1.example.com
+      Hostname: ca.provider.example.com
+      Country: EU
+      Province: Berlin
+      Locality: Germany
+      OrganizationalUnit: HOME
 
     Template:
       Count: 2

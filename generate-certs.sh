@@ -6,9 +6,9 @@ if [ -z "$CHANNEL_NAME" ]; then
 fi
 
 if [ -z "$ORDERER" ]; then
-    export ORDERER="HEREOrderer"
+    export ORDERER="here"
 fi
-organizations=("Consumer" "Provider")
+organizations=("consumer" "provider")
 
 PROJPATH=$(pwd)
 export FABRIC_CFG_PATH=$PROJPATH/templates
@@ -35,7 +35,7 @@ echo "#######        Generating cryptographic material       ##########"
 echo "#################################################################"
 $PROJPATH/generators/$PLATFORM/cryptogen generate \
     --config=$FABRIC_CFG_PATH/cryptogen.yaml \
-    --output=$CLIPATH/peers || exit
+    --output=$CLIPATH/peers
 
 echo
 echo "##########################################################"

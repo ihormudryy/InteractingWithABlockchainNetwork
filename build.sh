@@ -31,6 +31,7 @@ export COUCH_DB="${db_repo}/fabric-couchdb:${FABRIC_VERSION}"
 
 clean() {
     #docker stop $(docker ps -a --format "{{.Names}}")
+    docker network prune
     docker rm -f $(docker ps -a --format "{{.Names}}")
     #docker rmi -f $(docker images)
 }

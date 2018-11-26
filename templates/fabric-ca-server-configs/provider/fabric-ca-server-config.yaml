@@ -56,7 +56,6 @@ registry:
           hf.Revoker: true
           hf.IntermediateCA: true
 
-
 #############################################################################
 #  Database section
 #  Supported types are: "sqlite3", "postgres", and "mysql".
@@ -71,13 +70,6 @@ db:
       client:
         certfile: db-client-cert.pem
         keyfile: db-client-key.pem
-
-
-#db:
-#  type: sqlite3
-#  datasource: fabric-ca-server.db
-#  tls:
-#    enabled: false
 
 ############################################################################
 #  LDAP section
@@ -122,12 +114,10 @@ csr:
   names:
   - C: EU
     ST: "Berlin"
-    L:
-    O: "HERE"
-    OU: "Technologies"
+    L: "Germany"
+    O: "HOME"
   hosts:
-  - provider.example.com
-  - localhost
+  - ca
   ca:
     expiry: 131400h
     pathlength: 10

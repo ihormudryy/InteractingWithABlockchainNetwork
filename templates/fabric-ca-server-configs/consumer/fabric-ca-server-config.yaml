@@ -72,14 +72,6 @@ db:
         certfile: db-client-cert.pem
         keyfile: db-client-key.pem
 
-
-#db:
-#  type: sqlite3
-#  datasource: fabric-ca-server.db
-#  tls:
-#    enabled: false
-
-
 ############################################################################
 #  LDAP section
 #  If LDAP is enabled, the fabric-ca-server calls LDAP to:
@@ -124,12 +116,10 @@ csr:
   names:
   - C: EU
     ST: "Berlin"
-    L:
-    O: "HERE"
-    OU: "Technologies"
+    L: "Germany"
+    O: "HOME"
   hosts:
-  - consumer.example.com
-  - localhost
+  - ca
   ca:
     expiry: 131400h
     pathlength: 10
